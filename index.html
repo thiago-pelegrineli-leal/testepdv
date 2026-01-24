@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bahamas Store | Favela Edition</title>
+    <title>Bahamas Store | Cloud Edition</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -19,8 +19,7 @@
         }
         
         body { 
-            /* Fundo Favela Noturna HD */
-            background: linear-gradient(to bottom, rgba(13, 15, 18, 0.7), rgba(13, 15, 18, 0.95)), 
+            background: linear-gradient(to bottom, rgba(13, 15, 18, 0.75), rgba(13, 15, 18, 0.98)), 
                         url('https://wallpapers.com/images/hd/favela-rio-de-janeiro-brazil-night-lights-5645t9t9t9t9.jpg');
             background-size: cover;
             background-position: center;
@@ -31,30 +30,33 @@
             display: flex; flex-direction: column;
         }
         
-        /* UI Geral */
         .navbar { background: rgba(0, 0, 0, 0.9); border-bottom: 2px solid var(--primary); backdrop-filter: blur(10px); }
         .navbar-brand { font-weight: 800; color: var(--primary) !important; text-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
 
-        .glass-panel { background: rgba(20, 20, 25, 0.9); border: 1px solid #333; border-radius: 10px; backdrop-filter: blur(15px); }
+        .glass-panel { background: rgba(20, 20, 25, 0.85); border: 1px solid #333; border-radius: 10px; backdrop-filter: blur(15px); }
 
         /* Categorias */
         .category-bar { position: sticky; top: 56px; z-index: 900; background: rgba(13, 15, 18, 0.95); border-bottom: 1px solid #333; padding: 12px 0; }
         .cat-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
         .cat-btn { background: #000; color: #fff; border: 1px solid #444; padding: 6px 20px; border-radius: 4px; cursor: pointer; white-space: nowrap; transition: 0.3s; font-weight: 600; }
-        .cat-btn:hover, .cat-btn.active { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: 0 0 10px rgba(255,215,0,0.3); }
+        .cat-btn:hover, .cat-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
 
         /* Cards Produto */
-        .prod-card { background: var(--secondary); border-radius: 8px; border: 1px solid #333; overflow: hidden; transition: 0.3s; height: 100%; }
+        .prod-card { background: var(--secondary); border-radius: 8px; border: 1px solid #333; overflow: hidden; transition: 0.3s; height: 100%; display: flex; flex-direction: column; }
         .prod-card:hover { border-color: var(--primary); transform: translateY(-5px); }
-        .img-box { width: 100%; height: 180px; overflow: hidden; background: #000; cursor: pointer; position: relative; }
+        
+        .img-box { width: 100%; height: 180px; overflow: hidden; background: #0b0c10; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; }
         .img-box img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
         .prod-card:hover .img-box img { transform: scale(1.1); }
         
+        /* Ícone para Arquivos que não são imagem */
+        .file-icon { font-size: 4rem; color: #444; transition: 0.3s; }
+        .prod-card:hover .file-icon { color: var(--primary); transform: scale(1.1); }
+
         /* Estrelas do Staff */
         .staff-rating { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 10px; pointer-events: none; }
         .stars { color: var(--star-gold); text-shadow: 0 2px 4px #000; font-size: 0.9rem; }
 
-        /* Footer & Carrinho */
         footer { background: #08090b; border-top: 1px solid #333; margin-top: auto; padding: 40px 0; }
         .cart-float { position: fixed; bottom: 30px; right: 30px; background: var(--primary); width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #000; cursor: pointer; z-index: 1000; box-shadow: 0 0 25px rgba(255, 215, 0, 0.3); border: 2px solid #fff; }
         
@@ -93,8 +95,8 @@
 
         <div id="view-admin" class="view container py-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3 class="fw-bold text-warning"><i class="fas fa-user-tie me-2"></i>Gestão da Loja</h3>
-                <button class="btn btn-outline-light btn-sm" onclick="app.nav('store')">Voltar para Loja</button>
+                <h3 class="fw-bold text-warning"><i class="fas fa-user-tie me-2"></i>Painel Staff</h3>
+                <button class="btn btn-outline-light btn-sm" onclick="app.nav('store')">Sair</button>
             </div>
             
             <div class="row g-4">
@@ -102,40 +104,40 @@
                     <div class="glass-panel p-3 mb-4">
                         <h5 class="fw-bold mb-3 text-warning">Categorias</h5>
                         <div class="input-group mb-3">
-                            <input type="text" id="new-cat-name" class="form-control" placeholder="Ex: Armas, Vips...">
+                            <input type="text" id="new-cat-name" class="form-control" placeholder="Ex: Scripts, Carros...">
                             <button class="btn btn-light" onclick="admin.addCategory()"><i class="fas fa-plus"></i></button>
                         </div>
                         <div id="adm-cat-list" class="list-group rounded-0"></div>
                     </div>
                     
                     <div class="glass-panel p-3">
-                        <h5 class="fw-bold mb-3 text-warning">Termos de Uso</h5>
+                        <h5 class="fw-bold mb-3 text-warning">Termos</h5>
                         <textarea id="adm-termos-text" class="form-control mb-2" rows="4"></textarea>
-                        <button class="btn btn-outline-warning w-100 btn-sm" onclick="admin.saveTermos()">Salvar Texto</button>
+                        <button class="btn btn-outline-warning w-100 btn-sm" onclick="admin.saveTermos()">Salvar</button>
                     </div>
                 </div>
 
                 <div class="col-lg-8">
                     <div class="glass-panel p-4 mb-4">
-                        <h5 class="fw-bold mb-3 text-warning">Novo Produto</h5>
+                        <h5 class="fw-bold mb-3 text-warning">Cadastrar Item/Arquivo</h5>
                         <div class="row g-3">
                             <div class="col-md-8">
                                 <label class="small text-secondary">Nome</label>
-                                <input type="text" id="p-name" class="form-control" placeholder="Nome do item">
+                                <input type="text" id="p-name" class="form-control" placeholder="Nome do produto">
                             </div>
                             <div class="col-md-4">
-                                <label class="small text-secondary">Preço (R$)</label>
+                                <label class="small text-secondary">Preço</label>
                                 <input type="number" id="p-price" class="form-control" placeholder="0.00">
                             </div>
                             
                             <div class="col-md-6">
-                                <label class="small text-secondary">Avaliação (Staff)</label>
+                                <label class="small text-secondary">Avaliação Staff</label>
                                 <select id="p-rating" class="form-select border-warning text-warning fw-bold">
                                     <option value="5">⭐⭐⭐⭐⭐ (Lendário)</option>
                                     <option value="4">⭐⭐⭐⭐ (Épico)</option>
                                     <option value="3">⭐⭐⭐ (Raro)</option>
-                                    <option value="2">⭐⭐ (Incomum)</option>
-                                    <option value="1">⭐ (Comum)</option>
+                                    <option value="2">⭐⭐ (Comum)</option>
+                                    <option value="1">⭐ (Simples)</option>
                                 </select>
                             </div>
 
@@ -145,23 +147,24 @@
                             </div>
                             
                             <div class="col-12">
-                                <label class="small text-secondary">Imagem</label>
+                                <label class="small text-secondary fw-bold text-white">Arquivo ou Imagem (Máx 2MB)</label>
                                 <div class="input-group">
-                                    <input type="file" id="p-file" class="form-control" accept="image/*" onchange="admin.handleFileSelect(this)">
-                                    <input type="text" id="p-url" class="form-control" placeholder="Ou cole URL da imagem">
+                                    <input type="file" id="p-file" class="form-control" onchange="admin.handleFileSelect(this)">
                                 </div>
+                                <input type="text" id="p-url" class="form-control mt-2" placeholder="Ou cole URL de imagem externa">
+                                <small class="text-secondary" style="font-size:0.7rem">* Se for arquivo .zip/.rar, aparecerá um ícone. Se for imagem, aparecerá a foto.</small>
                             </div>
                             
                             <div class="col-12 mt-4">
-                                <button class="btn btn-warning w-100 fw-bold py-2" onclick="admin.saveProduct()">CADASTRAR NA LOJA</button>
+                                <button class="btn btn-warning w-100 fw-bold py-2" onclick="admin.saveProduct()">PUBLICAR</button>
                             </div>
                         </div>
                     </div>
 
                     <div class="glass-panel p-3">
-                        <h5 class="fw-bold mb-3">Itens Ativos</h5>
+                        <h5 class="fw-bold mb-3">Inventário</h5>
                         <div class="table-responsive">
-                            <table class="table table-dark table-hover align-middle mb-0"><tbody id="adm-table-prods"></tbody></table>
+                            <table class="table table-dark align-middle mb-0"><tbody id="adm-table-prods"></tbody></table>
                         </div>
                     </div>
                 </div>
@@ -173,22 +176,21 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body p-0">
-                    <div style="position: relative;">
-                        <img id="modal-p-img" src="" class="w-100" style="height: 250px; object-fit: cover; border-bottom: 2px solid var(--primary);">
+                    <div style="position: relative; height: 250px; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                        <div id="modal-content-area" class="w-100 h-100 d-flex align-items-center justify-content-center">
+                            </div>
                         <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3 p-2 bg-dark rounded-circle" data-bs-dismiss="modal"></button>
+                        <div class="position-absolute bottom-0 start-0 p-3 w-100" style="background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);">
+                             <div id="modal-p-stars" class="text-warning small"></div>
+                        </div>
                     </div>
                     <div class="p-4">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h4 class="fw-bold text-white mb-0" id="modal-p-name">Nome</h4>
-                            <div id="modal-p-stars" class="text-warning small"></div>
-                        </div>
+                        <h4 class="fw-bold text-white mb-0" id="modal-p-name">Nome</h4>
                         <h3 class="text-warning fw-bold mb-3" id="modal-p-price">R$ 0,00</h3>
-                        
-                        <div class="alert alert-dark border-secondary d-flex align-items-center gap-2 small text-secondary">
-                            <i class="fas fa-check-circle text-success"></i> Avaliado e Aprovado pela Administração.
+                        <div class="alert alert-dark border-secondary small text-secondary">
+                            <i class="fas fa-shield-alt text-success me-2"></i> Produto verificado pela Staff.
                         </div>
-
-                        <button type="button" class="btn btn-warning w-100 fw-bold py-2 mt-2" id="modal-btn-add">
+                        <button type="button" class="btn btn-warning w-100 fw-bold py-2" id="modal-btn-add">
                             ADICIONAR AO CARRINHO <i class="fas fa-cart-plus ms-2"></i>
                         </button>
                     </div>
@@ -205,8 +207,8 @@
     <footer>
         <div class="container text-center">
             <h5 class="fw-bold text-white">BAHAMAS STORE</h5>
-            <p class="text-secondary small mb-3">O fluxo não para. A loja mais braba da cidade.</p>
-            <button class="btn btn-sm btn-link text-secondary text-decoration-none" onclick="app.showTermos()">Ler Termos e Condições</button>
+            <p class="text-secondary small mb-3">O melhor marketplace de resources.</p>
+            <button class="btn btn-sm btn-link text-secondary text-decoration-none" onclick="app.showTermos()">Termos</button>
         </div>
     </footer>
 
@@ -230,6 +232,7 @@
         let storeData = { prods: {}, cats: {}, termos: "" };
         let cartItems = [];
         let currentFileBase64 = null;
+        let currentFileType = 'image'; // Padrão
 
         onValue(ref(db, 'store'), (snap) => {
             storeData = snap.val() || { prods: {}, cats: {}, termos: "" };
@@ -244,9 +247,7 @@
                 document.getElementById('view-' + v).classList.add('active');
             },
             
-            getStars: (n) => {
-                return '<i class="fas fa-star"></i>'.repeat(n) + '<i class="far fa-star"></i>'.repeat(5-n);
-            },
+            getStars: (n) => '<i class="fas fa-star"></i>'.repeat(n) + '<i class="far fa-star"></i>'.repeat(5-n),
 
             renderStore: (filter = 'Todos') => {
                 const cats = Object.values(storeData.cats || {});
@@ -257,20 +258,32 @@
                 const filtered = filter === 'Todos' ? prods : prods.filter(p => p.cat === filter);
                 
                 document.getElementById('prod-grid').innerHTML = filtered.map(p => {
-                    const stars = parseInt(p.rating || 5); // Pega a nota definida pelo staff
+                    const stars = parseInt(p.rating || 5);
+                    
+                    // Lógica para decidir se mostra Imagem ou Ícone de Arquivo
+                    let visualContent = '';
+                    const isImage = (p.fileType && p.fileType.startsWith('image')) || (p.img && p.img.match(/\.(jpeg|jpg|gif|png)$/) != null) || (p.img && p.img.startsWith('http'));
+                    
+                    if (isImage) {
+                        visualContent = `<img src="${p.img}" alt="${p.name}">`;
+                    } else {
+                        // Ícone genérico para Zip, Rar, etc.
+                        visualContent = `<i class="fas fa-file-zipper file-icon"></i>`;
+                    }
+
                     return `
                     <div class="col-6 col-md-4 col-lg-3">
                         <div class="prod-card">
                             <div class="img-box" onclick="app.openDetails('${p.id}')">
-                                <img src="${p.img || 'https://via.placeholder.com/300'}" alt="${p.name}">
+                                ${visualContent}
                                 <div class="staff-rating">
                                     <div class="stars">${app.getStars(stars)}</div>
                                 </div>
                             </div>
-                            <div class="p-3">
-                                <small class="text-secondary text-uppercase fw-bold" style="font-size:0.65rem">${p.cat}</small>
+                            <div class="p-3 d-flex flex-column flex-grow-1">
+                                <small class="text-secondary fw-bold text-uppercase" style="font-size:0.65rem">${p.cat}</small>
                                 <h6 class="fw-bold text-white text-truncate mt-1">${p.name}</h6>
-                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div class="mt-auto d-flex justify-content-between align-items-center pt-2">
                                     <span class="fw-bold text-warning">R$ ${p.price}</span>
                                     <button class="btn btn-sm btn-light rounded-circle" onclick="cart.add('${p.id}')"><i class="fas fa-plus"></i></button>
                                 </div>
@@ -286,9 +299,18 @@
                 
                 document.getElementById('modal-p-name').innerText = p.name;
                 document.getElementById('modal-p-price').innerText = `R$ ${p.price}`;
-                document.getElementById('modal-p-img').src = p.img || '';
                 document.getElementById('modal-p-stars').innerHTML = app.getStars(parseInt(p.rating || 5));
                 
+                // Lógica de exibição no Modal
+                const isImage = (p.fileType && p.fileType.startsWith('image')) || (p.img && p.img.startsWith('http'));
+                const area = document.getElementById('modal-content-area');
+                
+                if (isImage) {
+                    area.innerHTML = `<img src="${p.img}" class="w-100 h-100" style="object-fit:cover;">`;
+                } else {
+                    area.innerHTML = `<div class="text-center"><i class="fas fa-file-archive text-secondary" style="font-size: 5rem;"></i><br><small class="text-secondary mt-2">Arquivo Digital</small></div>`;
+                }
+
                 document.getElementById('modal-btn-add').onclick = () => { 
                     cart.add(id); 
                     bootstrap.Modal.getInstance(document.getElementById('productModal')).hide(); 
@@ -297,41 +319,30 @@
             },
 
             adminLogin: () => {
-                Swal.fire({ title: 'Acesso Restrito', input: 'password', background: '#1a1d24', color: '#fff' }).then(r => {
+                Swal.fire({ title: 'Staff', input: 'password', background: '#1a1d24', color: '#fff' }).then(r => {
                     if(r.value === '2707') app.nav('admin');
                 });
             },
-
-            showTermos: () => Swal.fire({ 
-                title: 'Regras da Loja', html: (storeData.termos || 'Sem regras.').replace(/\n/g, '<br>'),
-                background: '#1a1d24', color: '#fff' 
-            })
+            showTermos: () => Swal.fire({ title: 'Regras', html: (storeData.termos||'').replace(/\n/g, '<br>'), background:'#1a1d24', color:'#fff' })
         };
 
         window.cart = {
             add: (id) => {
-                const p = storeData.prods[id];
-                cartItems.push(p);
+                cartItems.push(storeData.prods[id]);
                 document.getElementById('cart-badge').innerText = cartItems.length;
-                const toast = Swal.mixin({toast: true, position: 'top-end', showConfirmButton: false, timer: 1500, background: '#32bcad', color:'#fff'});
-                toast.fire({icon: 'success', title: 'Adicionado!'});
+                Swal.mixin({toast: true, position: 'top-end', showConfirmButton: false, timer: 1500, background: '#32bcad', color:'#fff'}).fire({icon: 'success', title: 'Adicionado!'});
             },
             open: () => {
-                if(!cartItems.length) return Swal.fire('Vazio', 'Carrinho vazio.', 'info');
+                if(!cartItems.length) return Swal.fire('Vazio', '', 'info');
                 const total = cartItems.reduce((acc, i) => acc + parseFloat(i.price), 0);
-                const list = cartItems.map(i => `<div class="d-flex justify-content-between border-bottom border-secondary py-1 small"><span>${i.name}</span><b>R$ ${i.price}</b></div>`).join('');
-                
                 Swal.fire({
                     title: 'Seu Pedido', background: '#1a1d24', color: '#fff',
-                    html: `<div class="text-start mb-3">${list}</div><h4 class="text-warning text-center">Total: R$ ${total.toFixed(2)}</h4>`,
+                    html: `<div class="text-start mb-3">${cartItems.map(i => `<div class="d-flex justify-content-between border-bottom border-secondary py-1 small"><span>${i.name}</span><b>R$ ${i.price}</b></div>`).join('')}</div><h4 class="text-warning">Total: R$ ${total.toFixed(2)}</h4>`,
                     showCancelButton: true, confirmButtonText: 'Finalizar', confirmButtonColor: '#32bcad'
                 }).then(r => {
                     if(r.isConfirmed) {
-                        const msg = `🛒 *BAHAMAS STORE*\n${cartItems.map(i => `• ${i.name}`).join('\n')}\n💰 Total: R$ ${total.toFixed(2)}`;
-                        navigator.clipboard.writeText(msg);
+                        navigator.clipboard.writeText(`🛒 *PEDIDO BAHAMAS*\n${cartItems.map(i => `• ${i.name}`).join('\n')}\n💰 Total: R$ ${total.toFixed(2)}`);
                         window.open("https://discord.gg/uV3XzeWAtb", '_blank');
-                        cartItems = []; document.getElementById('cart-badge').innerText = 0;
-                    } else if (r.dismiss === Swal.DismissReason.cancel) {
                         cartItems = []; document.getElementById('cart-badge').innerText = 0;
                     }
                 });
@@ -346,17 +357,31 @@
                 
                 const prods = Object.values(storeData.prods || {});
                 document.getElementById('adm-table-prods').innerHTML = prods.map(p => 
-                    `<tr><td><img src="${p.img}" width="30" height="30" style="border-radius:4px"></td><td>${p.name}</td><td class="text-warning text-end">R$ ${p.price} <i class="fas fa-trash text-danger ms-2" onclick="admin.del('prods/${p.id}')" style="cursor:pointer"></i></td></tr>`
+                    `<tr>
+                        <td>${p.fileType && p.fileType.startsWith('image') ? `<img src="${p.img}" width="30">` : '<i class="fas fa-file"></i>'}</td>
+                        <td>${p.name}</td>
+                        <td class="text-warning text-end">R$ ${p.price} <i class="fas fa-trash text-danger ms-2" onclick="admin.del('prods/${p.id}')" style="cursor:pointer"></i></td>
+                    </tr>`
                 ).join('');
             },
+            
             handleFileSelect: (input) => {
                 if(input.files && input.files[0]) {
-                    if(input.files[0].size > 150000) return Swal.fire('Erro', 'Imagem muito grande! Use arquivo menor ou Link.', 'error');
+                    const file = input.files[0];
+                    currentFileType = file.type || 'application/unknown'; // Salva o tipo do arquivo
+
+                    // LIMITE AUMENTADO PARA 2MB
+                    if(file.size > 2100000) { 
+                        input.value = '';
+                        return Swal.fire('Muito Grande!', 'O limite é 2MB para não travar o site. Use um link externo se precisar de mais.', 'error');
+                    }
+
                     const reader = new FileReader();
                     reader.onload = (e) => currentFileBase64 = e.target.result;
-                    reader.readAsDataURL(input.files[0]);
+                    reader.readAsDataURL(file);
                 }
             },
+
             addCategory: () => {
                 const name = document.getElementById('new-cat-name').value;
                 if(name) {
@@ -365,27 +390,31 @@
                     document.getElementById('new-cat-name').value = '';
                 }
             },
+
             saveProduct: () => {
                 const name = document.getElementById('p-name').value;
                 const price = document.getElementById('p-price').value;
                 const cat = document.getElementById('p-cat-select').value;
-                const rating = document.getElementById('p-rating').value; // Pega nota do staff
-                const img = currentFileBase64 || document.getElementById('p-url').value || 'https://via.placeholder.com/300';
+                const rating = document.getElementById('p-rating').value;
+                const img = currentFileBase64 || document.getElementById('p-url').value || '';
                 
                 if(!name || !price || !cat) return Swal.fire('Erro', 'Preencha os campos', 'error');
                 
                 const key = push(ref(db, 'store/prods')).key;
-                set(ref(db, `store/prods/${key}`), { id: key, name, price, cat, rating, img });
-                Swal.fire('Sucesso', 'Produto Criado!', 'success');
+                set(ref(db, `store/prods/${key}`), { 
+                    id: key, name, price, cat, rating, img, 
+                    fileType: currentFileBase64 ? currentFileType : 'image/url' 
+                });
+                
+                Swal.fire('Sucesso', 'Item Publicado!', 'success');
                 currentFileBase64 = null;
+                document.getElementById('p-file').value = '';
             },
-            saveTermos: () => {
-                set(ref(db, 'store/termos'), document.getElementById('adm-termos-text').value);
-                Swal.fire('Salvo', 'Termos atualizados.', 'success');
-            },
+            
+            saveTermos: () => { set(ref(db, 'store/termos'), document.getElementById('adm-termos-text').value); Swal.fire('Salvo', '', 'success'); },
             del: (path) => remove(ref(db, `store/${path}`))
         };
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
+</html>'
