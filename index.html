@@ -1,244 +1,1049 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bahamas Store | Favela VIP</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="icon" type="image/jpeg" href="https://media-gru1-1.cdn.whatsapp.net/v/t61.24694-24/489405406_650586094569182_6793834854762065392_n.jpg?ccb=11-4&oh=01_Q5Aa4wGY7p0SayjbDIPzs9zg4cRQqjwpuZWHtXDXiacRVfJnLw&oe=6A35BF57&_nc_sid=5e03e0&_nc_cat=102">
+  
+  <title>PDV Profissional Grêmio</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
 
-    <style>
-        :root { 
-            --primary: #FFD700; 
-            --secondary: #1a1d24;
-            --star-gold: #ffc107;
-        }
-        
-        body { 
-            background-color: #0d0f12; /* Cor de fundo caso a imagem demore */
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            color: white; 
-            font-family: 'Montserrat', sans-serif; 
-            min-height: 100vh;
-            display: flex; flex-direction: column;
-            margin: 0;
-        }
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-        /* Camada de escurecimento sobre a imagem para dar contraste */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: -1;
-        }
-        
-        .navbar { background: rgba(0, 0, 0, 0.9); border-bottom: 2px solid var(--primary); backdrop-filter: blur(10px); }
-        .navbar-brand { font-weight: 800; color: var(--primary) !important; text-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
-
-        .glass-panel { background: rgba(20, 20, 25, 0.9); border: 1px solid #333; border-radius: 10px; backdrop-filter: blur(15px); }
-
-        .category-bar { position: sticky; top: 56px; z-index: 900; background: rgba(13, 15, 18, 0.95); border-bottom: 1px solid #444; padding: 12px 0; }
-        .cat-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
-        .cat-btn { background: #000; color: #fff; border: 1px solid #444; padding: 6px 20px; border-radius: 4px; cursor: pointer; white-space: nowrap; transition: 0.3s; font-weight: 600; }
-        .cat-btn:hover, .cat-btn.active { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: 0 0 10px rgba(255,215,0,0.3); }
-
-        .prod-card { background: var(--secondary); border-radius: 8px; border: 1px solid #333; overflow: hidden; transition: 0.3s; height: 100%; display: flex; flex-direction: column; }
-        .prod-card:hover { border-color: var(--primary); transform: translateY(-5px); }
-        .img-box { width: 100%; height: 180px; overflow: hidden; background: #0b0c10; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; }
-        .img-box img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .file-icon { font-size: 3.5rem; color: #555; }
-
-        .staff-rating { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 10px; pointer-events: none; }
-        .stars { color: var(--star-gold); text-shadow: 0 2px 4px #000; font-size: 0.85rem; }
-
-        footer { background: #08090b; border-top: 1px solid #333; margin-top: auto; padding: 40px 0; }
-        .cart-float { position: fixed; bottom: 30px; right: 30px; background: var(--primary); width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #000; cursor: pointer; z-index: 1000; box-shadow: 0 0 25px rgba(255, 215, 0, 0.4); border: 2px solid #fff; }
-        
-        .modal-content { background: #1a1d24; color: white; border: 1px solid #444; }
-        .form-control, .form-select { background: #0d0f12; border: 1px solid #444; color: white; }
-
-        .view { display: none; }
-        .view.active { display: block; }
-    </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "lucide-react": "https://esm.sh/lucide-react@0.330.0?deps=react@18.2.0",
+        "firebase/app": "https://esm.sh/firebase@10.8.0/app",
+        "firebase/firestore": "https://esm.sh/firebase@10.8.0/firestore"
+      }
+    }
+  </script>
 </head>
-<body>
+<body class="transition-colors duration-300 bg-gray-100 dark:bg-gray-950 text-gray-800 dark:text-gray-100">
+  <div id="root"></div>
 
-    <nav class="navbar navbar-expand navbar-dark sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="#" onclick="app.nav('store')"><i class="fas fa-crown me-2"></i>BAHAMAS STORE</a>
-            <button class="btn btn-sm btn-outline-light fw-bold" onclick="app.adminLogin()">STAFF</button>
-        </div>
-    </nav>
+  <script type="text/babel" data-type="module">
+    import React, { useState, useEffect, useRef } from 'react';
+    import { createRoot } from 'react-dom/client';
+    import { 
+      ShoppingCart, Settings, Tag, PlusCircle, MinusCircle, CheckCircle, 
+      CreditCard, Banknote, X, Edit2, Trash2, RotateCcw, LayoutDashboard, 
+      History, Printer, Download, Calculator, Lock, Sun, Moon, AlertTriangle, Info,
+      GripHorizontal, Archive, Image as ImageIcon, Cloud, Wifi, WifiOff, FileText
+    } from 'lucide-react';
 
-    <main>
-        <div id="view-store" class="view active">
-            <div class="category-bar">
-                <div class="container"><div class="cat-scroll" id="cat-list"></div></div>
-            </div>
-            <div class="container py-4">
-                <div class="row g-4" id="prod-grid"></div>
-            </div>
-        </div>
+    import { initializeApp } from "firebase/app";
+    import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "firebase/firestore";
 
-        <div id="view-admin" class="view container py-4">
-            <h3 class="fw-bold text-warning mb-4">Painel Staff</h3>
-            <div class="row g-4">
-                <div class="col-lg-4">
-                    <div class="glass-panel p-3 mb-4">
-                        <h6>Categorias</h6>
-                        <div class="input-group mb-3">
-                            <input type="text" id="new-cat-name" class="form-control" placeholder="Nome...">
-                            <button class="btn btn-light" onclick="admin.addCategory()">+</button>
-                        </div>
-                        <div id="adm-cat-list" class="list-group rounded-0"></div>
-                    </div>
-                </div>
-                <div class="col-lg-8">
-                    <div class="glass-panel p-4 mb-4">
-                        <h6>Novo Arquivo/Produto</h6>
-                        <div class="row g-3">
-                            <input type="text" id="p-name" class="form-control" placeholder="Nome do Produto">
-                            <input type="number" id="p-price" class="form-control" placeholder="Preço (R$)">
-                            <select id="p-cat-select" class="form-select"></select>
-                            <select id="p-rating" class="form-select text-warning">
-                                <option value="5">⭐⭐⭐⭐⭐</option>
-                                <option value="4">⭐⭐⭐⭐</option>
-                                <option value="3">⭐⭐⭐</option>
-                            </select>
-                            <input type="file" id="p-file" class="form-control" onchange="admin.handleFileSelect(this)">
-                            <button class="btn btn-warning w-100 fw-bold" onclick="admin.saveProduct()">POSTAR</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+    // --- CONFIGURAÇÃO DO FIREBASE ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyAd_XhH4euXapob_ORf1Uuv4YobRizX4a4",
+      authDomain: "pdv-81850.firebaseapp.com",
+      projectId: "pdv-81850",
+      storageBucket: "pdv-81850.firebasestorage.app",
+      messagingSenderId: "170651547564",
+      appId: "1:170651547564:web:962c1e5840e7970663ac09",
+      measurementId: "G-FE5G0NDBC3"
+    };
 
-    <div class="cart-float" onclick="cart.open()">
-        <i class="fas fa-shopping-bag"></i>
-        <span id="cart-badge" class="badge bg-danger">0</span>
-    </div>
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, set, onValue, push, remove } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+    function App() {
+      // --- GERENCIAMENTO DE ESTADO E LOCALSTORAGE ---
+      const loadData = (key, defaultValue) => {
+        const saved = localStorage.getItem(key);
+        return saved ? JSON.parse(saved) : defaultValue;
+      };
 
-        // CONFIGURAÇÃO DA IMAGEM DE FUNDO
-        const bgBase64 = "data:image/jpeg;base64,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";
+      const [theme, setTheme] = useState(() => loadData('pdv_theme', 'light'));
+      
+      const defaultSettings = { 
+        eventName: 'Evento Atual', 
+        gremioName: 'Grêmio Estudantil',
+        logoUrl: 'https://media-gru1-1.cdn.whatsapp.net/v/t61.24694-24/489405406_650586094569182_6793834854762065392_n.jpg?ccb=11-4&oh=01_Q5Aa4wGY7p0SayjbDIPzs9zg4cRQqjwpuZWHtXDXiacRVfJnLw&oe=6A35BF57&_nc_sid=5e03e0&_nc_cat=102'
+      };
+      
+      const [settings, setSettings] = useState(() => {
+        const loaded = loadData('pdv_settings', defaultSettings);
+        return { ...defaultSettings, ...loaded };
+      });
+      
+      const [eventLogs, setEventLogs] = useState(() => loadData('pdv_event_logs', []));
+      const [products, setProducts] = useState(() => loadData('pdv_products', []));
+      const [sales, setSales] = useState(() => loadData('pdv_sales', []));
+      
+      const [activeTab, setActiveTab] = useState('pos'); 
+      const [cart, setCart] = useState([]);
+      const [cartDiscount, setCartDiscount] = useState(0);
 
-        window.onload = () => {
-            document.body.style.backgroundImage = `url('${bgBase64}')`;
-        };
+      const defaultDrawer = {
+        200: 0, 100: 0, 50: 0, 20: 0, 10: 0, 5: 0, 2: 0, 1: 0, 0.5: 0, 0.25: 0, 0.1: 0, 0.05: 0
+      };
+      const [cashDrawer, setCashDrawer] = useState(() => loadData('pdv_cash_drawer', defaultDrawer));
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCYzx7TPmAghFcGuKYzBDIYRW0SjrMJ_r8", 
-            authDomain: "quebrei-o-sistema.firebaseapp.com",
-            databaseURL: "https://quebrei-o-sistema-default-rtdb.firebaseio.com",
-            projectId: "quebrei-o-sistema",
-            storageBucket: "quebrei-o-sistema.firebasestorage.app",
-            messagingSenderId: "133672006102",
-            appId: "1:133672006102:web:e62c681ced44b3650f7477"
-        };
+      // Sistema de Nuvem
+      const [sessionId, setSessionId] = useState(() => loadData('pdv_session_id', null));
+      const [joinCode, setJoinCode] = useState('');
+      const isSyncing = useRef(false);
 
-        const appDb = initializeApp(firebaseConfig);
-        const db = getDatabase(appDb);
+      // Modais Customizados
+      const [isCalcOpen, setIsCalcOpen] = useState(false);
+      const [calcInput, setCalcInput] = useState('');
+      const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', text: '', action: null, isDanger: false });
+      const [alertDialog, setAlertDialog] = useState({ isOpen: false, title: '', text: '' });
+      const [isPixModalOpen, setIsPixModalOpen] = useState(false);
+      const [selectedEventLog, setSelectedEventLog] = useState(null); // Detalhes do Evento
+      
+      const [editingProduct, setEditingProduct] = useState(null);
+      const [prodName, setProdName] = useState('');
+      const [prodPrice, setProdPrice] = useState('');
+      
+      const [checkoutMsg, setCheckoutMsg] = useState('');
+      const [pixStudentName, setPixStudentName] = useState('');
+      const [pixStudentClass, setPixStudentClass] = useState('');
 
-        let storeData = { prods: {}, cats: {} };
-        let cartItems = [];
-        let currentFileBase64 = null;
+      // Persistência Local
+      useEffect(() => { localStorage.setItem('pdv_theme', JSON.stringify(theme)); }, [theme]);
+      useEffect(() => { localStorage.setItem('pdv_settings', JSON.stringify(settings)); }, [settings]);
+      useEffect(() => { localStorage.setItem('pdv_event_logs', JSON.stringify(eventLogs)); }, [eventLogs]);
+      useEffect(() => { localStorage.setItem('pdv_products', JSON.stringify(products)); }, [products]);
+      useEffect(() => { localStorage.setItem('pdv_sales', JSON.stringify(sales)); }, [sales]);
+      useEffect(() => { localStorage.setItem('pdv_cash_drawer', JSON.stringify(cashDrawer)); }, [cashDrawer]);
+      useEffect(() => { localStorage.setItem('pdv_session_id', JSON.stringify(sessionId)); }, [sessionId]);
 
-        onValue(ref(db, 'store'), (snap) => {
-            storeData = snap.val() || { prods: {}, cats: {} };
-            app.renderStore();
-            admin.render();
+      // Aplicação do Tema Dark/Light
+      useEffect(() => {
+        if (theme === 'dark') document.documentElement.classList.add('dark');
+        else document.documentElement.classList.remove('dark');
+      }, [theme]);
+
+      // --- LÓGICA DE SINCRONIZAÇÃO FIREBASE ---
+      useEffect(() => {
+        if (!sessionId) return;
+        const unsub = onSnapshot(doc(db, "pdv_sessions", sessionId), (docSnap) => {
+          if (docSnap.exists()) {
+            isSyncing.current = true;
+            const data = docSnap.data();
+            if(data.settings) setSettings(data.settings);
+            if(data.products) setProducts(data.products);
+            if(data.sales) setSales(data.sales);
+            if(data.cashDrawer) setCashDrawer(data.cashDrawer);
+            if(data.eventLogs) setEventLogs(data.eventLogs);
+            
+            setTimeout(() => { isSyncing.current = false; }, 800);
+          } else {
+            setSessionId(null);
+            setAlertDialog({isOpen: true, title: 'Sessão Encerrada', text: 'A sessão remota foi fechada ou não existe mais.'});
+          }
         });
+        return () => unsub();
+      }, [sessionId]);
 
-        window.app = {
-            nav: (v) => {
-                document.querySelectorAll('.view').forEach(e => e.classList.remove('active'));
-                document.getElementById('view-' + v).classList.add('active');
-            },
-            renderStore: (filter = 'Todos') => {
-                const cats = Object.values(storeData.cats || {});
-                document.getElementById('cat-list').innerHTML = `<div class="cat-btn ${filter==='Todos'?'active':''}" onclick="app.renderStore('Todos')">Tudo</div>` + 
-                    cats.map(c => `<div class="cat-btn ${filter===c.name?'active':''}" onclick="app.renderStore('${c.name}')">${c.name}</div>`).join('');
+      useEffect(() => {
+        if(!sessionId || isSyncing.current) return;
+        const pushToCloud = async () => {
+          try {
+            await setDoc(doc(db, "pdv_sessions", sessionId), {
+              settings, products, sales, cashDrawer, eventLogs, updatedAt: new Date().toISOString()
+            }, { merge: true });
+          } catch(e) {
+            console.error("Erro ao sincronizar dados", e);
+          }
+        };
+        const timeoutId = setTimeout(pushToCloud, 1000);
+        return () => clearTimeout(timeoutId);
+      }, [settings, products, sales, cashDrawer, eventLogs, sessionId]);
 
-                const prods = Object.values(storeData.prods || {});
-                const filtered = filter === 'Todos' ? prods : prods.filter(p => p.cat === filter);
-                
-                document.getElementById('prod-grid').innerHTML = filtered.map(p => `
-                    <div class="col-6 col-md-3">
-                        <div class="prod-card">
-                            <div class="img-box">
-                                ${p.type && p.type.includes('image') ? `<img src="${p.img}">` : `<i class="fas fa-file-archive file-icon"></i>`}
-                                <div class="staff-rating"><div class="stars">${'<i class="fas fa-star"></i>'.repeat(p.rating || 5)}</div></div>
-                            </div>
-                            <div class="p-3">
-                                <h6 class="text-white text-truncate">${p.name}</h6>
-                                <b class="text-warning">R$ ${p.price}</b>
-                                <button class="btn btn-sm btn-light w-100 mt-2" onclick="cart.add('${p.id}')">Carrinho</button>
-                            </div>
+      const createCloudSession = async () => {
+        const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+        try {
+          await setDoc(doc(db, "pdv_sessions", code), {
+            settings, products, sales, cashDrawer, eventLogs, createdAt: new Date().toISOString()
+          });
+          setSessionId(code);
+          setAlertDialog({isOpen: true, title: 'Sessão Criada!', text: `Seu código de acesso é: ${code}. Use-o nos outros dispositivos para conectar.`});
+        } catch(e) {
+          setAlertDialog({isOpen: true, title: 'Erro de Conexão', text: 'Não foi possível criar a sessão na nuvem. Verifique sua rede.'});
+        }
+      };
+
+      const joinCloudSession = async () => {
+        if(!joinCode.trim()) return;
+        const code = joinCode.trim().toUpperCase();
+        try {
+          const docSnap = await getDoc(doc(db, "pdv_sessions", code));
+          if(docSnap.exists()) {
+            setSessionId(code);
+            setJoinCode('');
+            setAlertDialog({isOpen: true, title: 'Conectado!', text: `Dispositivo sincronizado com a sessão ${code} com sucesso.`});
+          } else {
+            setAlertDialog({isOpen: true, title: 'Não Encontrado', text: 'O código inserido não existe ou a sessão foi encerrada.'});
+          }
+        } catch(e) {
+          setAlertDialog({isOpen: true, title: 'Erro de Conexão', text: 'Falha ao buscar a sessão. Verifique sua internet.'});
+        }
+      };
+
+      const disconnectSession = () => {
+        setConfirmDialog({
+          isOpen: true, title: 'Desconectar Dispositivo', text: 'Tem certeza? Este dispositivo não receberá mais atualizações dos outros caixas.', isDanger: true,
+          action: () => setSessionId(null)
+        });
+      };
+
+      // Utilitários
+      const formatCurrency = (val) => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      const formatDate = (isoString) => new Date(isoString).toLocaleString('pt-BR');
+
+      // --- CAIXA E VENDAS ---
+      const addToCart = (product) => {
+        setCart(prev => {
+          const exists = prev.find(i => i.product.id === product.id);
+          if (exists) return prev.map(i => i.product.id === product.id ? { ...i, quantity: i.quantity + 1 } : i);
+          return [...prev, { product, quantity: 1 }];
+        });
+      };
+
+      const removeFromCart = (productId) => {
+        setCart(prev => {
+          const exists = prev.find(i => i.product.id === productId);
+          if (exists.quantity === 1) return prev.filter(i => i.product.id !== productId);
+          return prev.map(i => i.product.id === productId ? { ...i, quantity: i.quantity - 1 } : i);
+        });
+      };
+
+      const cartSubtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      const cartTotal = Math.max(0, cartSubtotal - cartDiscount);
+
+      const handlePixClick = () => {
+        if (cart.length === 0) return;
+        setIsPixModalOpen(true);
+      };
+
+      const processCheckout = (paymentMethod) => {
+        if (cart.length === 0) return;
+        
+        if (paymentMethod === 'PIX' && (!pixStudentName.trim() || !pixStudentClass.trim())) {
+          setAlertDialog({ isOpen: true, title: 'Atenção', text: 'Por favor, preencha o Nome e a Série do aluno.'});
+          return;
+        }
+
+        const newSale = {
+          id: Date.now().toString(),
+          items: [...cart], subtotal: cartSubtotal, discount: cartDiscount, total: cartTotal,
+          paymentMethod, timestamp: new Date().toISOString(),
+          studentInfo: paymentMethod === 'PIX' ? { name: pixStudentName, schoolClass: pixStudentClass } : null
+        };
+
+        setSales([newSale, ...sales]); setCart([]); setCartDiscount(0);
+        setPixStudentName(''); setPixStudentClass(''); setIsPixModalOpen(false);
+
+        setCheckoutMsg(`Sucesso! ${formatCurrency(cartTotal)} via ${paymentMethod}`);
+        setTimeout(() => setCheckoutMsg(''), 3000);
+      };
+
+      const cancelSale = (saleId) => {
+        setConfirmDialog({
+          isOpen: true, title: 'Estornar Venda', text: 'Tem certeza que deseja estornar (cancelar) esta venda? Ela será removida do histórico atual.', isDanger: true,
+          action: () => setSales(sales.filter(s => s.id !== saleId))
+        });
+      };
+
+      // --- PRODUTOS ---
+      const saveProduct = (e) => {
+        e.preventDefault();
+        if (!prodName || !prodPrice) return;
+        const priceNum = parseFloat(prodPrice.toString().replace(',', '.'));
+        if (editingProduct) {
+          setProducts(products.map(p => p.id === editingProduct.id ? { ...p, name: prodName, price: priceNum } : p));
+          setEditingProduct(null);
+        } else {
+          setProducts([...products, { id: Date.now().toString(), name: prodName, price: priceNum }]);
+        }
+        setProdName(''); setProdPrice('');
+      };
+
+      const deleteProduct = (id) => {
+        setConfirmDialog({
+          isOpen: true, title: 'Excluir Produto', text: 'Deseja excluir este produto definitivamente do cardápio?', isDanger: true,
+          action: () => {
+            setProducts(products.filter(p => p.id !== id));
+            setCart(cart.filter(item => item.product.id !== id));
+          }
+        });
+      };
+
+      // --- EXPORTAÇÃO E CÁLCULOS ---
+      const getReport = (salesData = sales) => {
+        return salesData.reduce((acc, sale) => {
+          acc.total += sale.total;
+          acc.discounts += sale.discount || 0;
+          if (sale.paymentMethod === 'PIX') acc.pix += sale.total;
+          if (sale.paymentMethod === 'DINHEIRO') acc.dinheiro += sale.total;
+
+          sale.items.forEach(item => {
+            if (!acc.items[item.product.id]) acc.items[item.product.id] = { name: item.product.name, quantity: 0, total: 0 };
+            acc.items[item.product.id].quantity += item.quantity;
+            acc.items[item.product.id].total += (item.quantity * item.product.price);
+          });
+          return acc;
+        }, { total: 0, pix: 0, dinheiro: 0, discounts: 0, items: {} });
+      };
+
+      const executeWithLightMode = (callback) => {
+        const wasDark = document.documentElement.classList.contains('dark');
+        if (wasDark) document.documentElement.classList.remove('dark');
+        setTimeout(() => {
+          callback(() => {
+            if (wasDark) document.documentElement.classList.add('dark');
+          });
+        }, 150);
+      };
+
+      const requestPrint = () => {
+        executeWithLightMode((restoreTheme) => {
+          window.print();
+          setTimeout(restoreTheme, 1000); 
+        });
+      };
+
+      const downloadPDF = (elementId, filenamePrefix) => {
+        const element = document.getElementById(elementId);
+        executeWithLightMode((restoreTheme) => {
+          const opt = {
+            margin: 10,
+            filename: `${filenamePrefix}_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          };
+          html2pdf().set(opt).from(element).save().then(restoreTheme);
+        });
+      };
+
+      const calculateDrawerTotal = () => {
+        return Object.entries(cashDrawer).reduce((total, [value, qty]) => total + (Number(value) * Number(qty || 0)), 0);
+      };
+
+      // --- CALCULADORA ---
+      const calcPos = useRef({ x: window.innerWidth > 768 ? window.innerWidth - 300 : 20, y: 20 });
+      const calcRef = useRef(null);
+
+      const handleCalcDragStart = (e) => {
+        const startX = e.clientX || e.touches[0].clientX;
+        const startY = e.clientY || e.touches[0].clientY;
+        const startPosX = calcPos.current.x;
+        const startPosY = calcPos.current.y;
+
+        const onMove = (moveEvent) => {
+          const currentX = moveEvent.clientX || (moveEvent.touches && moveEvent.touches[0].clientX);
+          const currentY = moveEvent.clientY || (moveEvent.touches && moveEvent.touches[0].clientY);
+          calcPos.current = {
+            x: startPosX + (currentX - startX),
+            y: startPosY + (currentY - startY)
+          };
+          if(calcRef.current) {
+            calcRef.current.style.transform = `translate(${calcPos.current.x}px, ${calcPos.current.y}px)`;
+          }
+        };
+
+        const onEnd = () => {
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onEnd);
+          document.removeEventListener('touchmove', onMove);
+          document.removeEventListener('touchend', onEnd);
+        };
+
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onEnd);
+        document.addEventListener('touchmove', onMove, { passive: false });
+        document.addEventListener('touchend', onEnd);
+      };
+
+      const handleCalcBtn = (btn) => {
+        if(btn === 'C') setCalcInput('');
+        else if(btn === '=') { 
+          try { 
+            let evalStr = calcInput.replace(/×/g, '*').replace(/÷/g, '/').replace(/,/g, '.');
+            let res = eval(evalStr);
+            setCalcInput(res.toString().replace(/\./g, ',')); 
+          } catch(e) { 
+            setCalcInput('Erro'); 
+          } 
+        } 
+        else { 
+          setCalcInput(prev => prev === 'Erro' ? btn : prev + btn); 
+        }
+      };
+
+      const NavItem = ({ id, icon: Icon, label }) => (
+        <button onClick={() => setActiveTab(id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${activeTab === id ? 'bg-blue-600 text-white shadow-md' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
+          <Icon size={20} /> <span className="hidden md:block">{label}</span>
+        </button>
+      );
+
+      const reportData = getReport();
+      const drawerTotal = calculateDrawerTotal();
+      const drawerDiff = drawerTotal - reportData.dinheiro;
+
+      return (
+        <div className="min-h-screen flex w-full">
+          
+          {/* ================= MODAIS ESCONDIDOS ================= */}
+          
+          {/* Alerta Simples */}
+          {alertDialog.isOpen && (
+            <div className="absolute inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm print:hidden">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm p-6 animate-in zoom-in-95">
+                <div className="flex items-center gap-3 mb-4 text-blue-600 dark:text-blue-400">
+                  <Info size={28}/> <h3 className="text-xl font-bold">{alertDialog.title}</h3>
+                </div>
+                <p className="text-gray-700 dark:text-gray-300 mb-6">{alertDialog.text}</p>
+                <button onClick={() => setAlertDialog({isOpen: false})} className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-colors">
+                  Entendi
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Confirmação (Sim/Não) */}
+          {confirmDialog.isOpen && (
+            <div className="absolute inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm print:hidden">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm p-6 animate-in zoom-in-95">
+                <div className={`flex items-center gap-3 mb-4 ${confirmDialog.isDanger ? 'text-red-500' : 'text-blue-600 dark:text-blue-400'}`}>
+                  {confirmDialog.isDanger ? <AlertTriangle size={28}/> : <Info size={28}/>} 
+                  <h3 className="text-xl font-bold">{confirmDialog.title}</h3>
+                </div>
+                <p className="text-gray-700 dark:text-gray-300 mb-6">{confirmDialog.text}</p>
+                <div className="flex gap-3">
+                  <button onClick={() => setConfirmDialog({...confirmDialog, isOpen: false})} className="flex-1 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-xl font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                    Cancelar
+                  </button>
+                  <button onClick={() => { confirmDialog.action(); setConfirmDialog({...confirmDialog, isOpen: false}); }} className={`flex-1 py-3 text-white rounded-xl font-bold transition-colors ${confirmDialog.isDanger ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'}`}>
+                    Confirmar
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal: Detalhes do Evento Arquivado */}
+          {selectedEventLog && (
+            <div className="absolute inset-0 bg-black/60 z-[90] flex items-center justify-center p-4 backdrop-blur-sm print:hidden">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-3xl overflow-hidden animate-in zoom-in-95 flex flex-col max-h-[90vh]">
+                <div className="flex justify-between items-center p-5 border-b dark:border-gray-700 bg-blue-50 dark:bg-blue-900/30">
+                  <div>
+                    <h3 className="font-bold text-blue-800 dark:text-blue-400 flex items-center gap-2 text-lg">
+                      <Archive size={20} /> Detalhes: {selectedEventLog.eventName}
+                    </h3>
+                    <p className="text-sm text-gray-500 mt-1">{formatDate(selectedEventLog.date)}</p>
+                  </div>
+                  <button onClick={() => setSelectedEventLog(null)} className="text-gray-500 hover:text-red-500 transition-colors p-2"><X size={24} /></button>
+                </div>
+                <div className="p-6 overflow-y-auto flex-1">
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl border border-green-200 dark:border-green-800/50 text-center">
+                      <p className="text-xs uppercase font-bold text-green-700 dark:text-green-400">Total Faturado</p>
+                      <p className="text-2xl font-black text-green-700 dark:text-green-300">{formatCurrency(selectedEventLog.totalSales)}</p>
+                    </div>
+                    <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800/50 text-center">
+                      <p className="text-xs uppercase font-bold text-blue-700 dark:text-blue-400">Total de Transações</p>
+                      <p className="text-2xl font-black text-blue-700 dark:text-blue-300">{selectedEventLog.salesCount}</p>
+                    </div>
+                  </div>
+                  
+                  <h4 className="font-bold mb-3 text-lg border-b dark:border-gray-700 pb-2">Histórico de Transações do Evento</h4>
+                  <div className="space-y-3">
+                    {selectedEventLog.salesData.length === 0 && <p className="text-gray-500">Nenhuma transação registrada neste evento.</p>}
+                    {selectedEventLog.salesData.map(sale => (
+                      <div key={sale.id} className="bg-gray-50 dark:bg-gray-700/30 p-4 rounded-xl border dark:border-gray-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                        <div>
+                          <div className="flex flex-wrap items-center gap-2 mb-1">
+                            <span className={`px-2 py-0.5 rounded text-xs font-bold ${sale.paymentMethod === 'PIX' ? 'bg-teal-100 dark:bg-teal-900/50 text-teal-800 dark:text-teal-300' : 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300'}`}>{sale.paymentMethod}</span>
+                            <span className="text-xs text-gray-500">{new Date(sale.timestamp).toLocaleTimeString('pt-BR')}</span>
+                            {sale.studentInfo && <span className="text-xs bg-gray-200 dark:bg-gray-600 px-2 py-0.5 rounded-md">👤 {sale.studentInfo.name} ({sale.studentInfo.schoolClass})</span>}
+                          </div>
+                          <p className="text-sm text-gray-700 dark:text-gray-300">
+                            {sale.items.map(i => `${i.quantity}x ${i.product.name}`).join(' • ')}
+                          </p>
                         </div>
-                    </div>`).join('');
-            },
-            adminLogin: () => {
-                Swal.fire({ title: 'Acesso Staff', input: 'password' }).then(r => {
-                    if(r.value === '2707') app.nav('admin');
-                });
-            }
-        };
+                        <span className="text-lg font-black shrink-0">{formatCurrency(sale.total)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
-        window.cart = {
-            add: (id) => {
-                cartItems.push(storeData.prods[id]);
-                document.getElementById('cart-badge').innerText = cartItems.length;
-            },
-            open: () => {
-                const total = cartItems.reduce((acc, i) => acc + parseFloat(i.price), 0);
-                Swal.fire({
-                    title: 'Carrinho',
-                    html: `Total: R$ ${total.toFixed(2)}`,
-                    confirmButtonText: 'Finalizar no Discord'
-                }).then(r => {
-                    if(r.isConfirmed) window.open("https://discord.gg/uV3XzeWAtb", '_blank');
-                });
-            }
-        };
+          {/* Calculadora Flutuante */}
+          {isCalcOpen && (
+            <div 
+              ref={calcRef}
+              style={{ transform: `translate(${calcPos.current.x}px, ${calcPos.current.y}px)` }}
+              className="fixed top-0 left-0 z-50 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 w-64 print:hidden animate-in fade-in overflow-hidden"
+            >
+              <div 
+                className="flex justify-between items-center p-3 bg-gray-100 dark:bg-gray-900 cursor-move border-b border-gray-200 dark:border-gray-700"
+                onMouseDown={handleCalcDragStart}
+                onTouchStart={handleCalcDragStart}
+              >
+                <div className="flex items-center gap-2 text-gray-500">
+                  <GripHorizontal size={16}/>
+                  <span className="font-bold text-sm uppercase">Calculadora</span>
+                </div>
+                <button onClick={() => setIsCalcOpen(false)} className="text-gray-500 hover:text-red-500"><X size={18}/></button>
+              </div>
+              
+              <div className="p-4">
+                <div className="bg-gray-100 dark:bg-gray-900 p-3 rounded-xl text-right text-2xl font-mono mb-3 overflow-hidden border dark:border-gray-700 h-14 flex items-center justify-end">
+                  {calcInput || '0'}
+                </div>
+                <div className="grid grid-cols-4 gap-2">
+                  {['7','8','9','÷','4','5','6','×','1','2','3','-','C','0',',','+'].map(btn => (
+                    <button key={btn} onClick={() => handleCalcBtn(btn)} className={`p-3 rounded-lg font-bold text-lg transition-colors ${btn === 'C' ? 'bg-red-500 text-white hover:bg-red-600' : ['÷','×','-','+'].includes(btn) ? 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600' : 'bg-gray-50 dark:bg-gray-800 border dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700'}`}>{btn}</button>
+                  ))}
+                  <button onClick={() => handleCalcBtn('=')} className="col-span-4 p-3 bg-blue-600 text-white rounded-lg font-bold text-lg hover:bg-blue-700 transition-colors">=</button>
+                </div>
+              </div>
+            </div>
+          )}
 
-        window.admin = {
-            render: () => {
-                const cats = Object.values(storeData.cats || {});
-                document.getElementById('adm-cat-list').innerHTML = cats.map(c => `<div class="list-group-item bg-dark text-white">${c.name}</div>`).join('');
-                document.getElementById('p-cat-select').innerHTML = cats.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
-            },
-            handleFileSelect: (input) => {
-                const reader = new FileReader();
-                reader.onload = (e) => currentFileBase64 = e.target.result;
-                reader.readAsDataURL(input.files[0]);
-            },
-            addCategory: () => {
-                const name = document.getElementById('new-cat-name').value;
-                const key = push(ref(db, 'store/cats')).key;
-                set(ref(db, `store/cats/${key}`), { id: key, name });
-            },
-            saveProduct: () => {
-                const name = document.getElementById('p-name').value;
-                const price = document.getElementById('p-price').value;
-                const cat = document.getElementById('p-cat-select').value;
-                const rating = document.getElementById('p-rating').value;
-                const key = push(ref(db, 'store/prods')).key;
-                set(ref(db, `store/prods/${key}`), { id: key, name, price, cat, rating, img: currentFileBase64, type: 'file' });
-                Swal.fire('OK', 'Postado!', 'success');
-            }
-        };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+          {/* Modal PIX */}
+          {isPixModalOpen && (
+            <div className="absolute inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm print:hidden">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95">
+                <div className="flex justify-between items-center p-4 border-b dark:border-gray-700 bg-teal-50 dark:bg-teal-900/30">
+                  <h3 className="font-bold text-teal-800 dark:text-teal-400 flex items-center gap-2"><CreditCard size={20} /> Dados do PIX</h3>
+                  <button onClick={() => setIsPixModalOpen(false)} className="text-gray-500 hover:text-gray-700 dark:text-gray-400"><X size={20} /></button>
+                </div>
+                <div className="p-6 space-y-4">
+                  <div className="text-center mb-6">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Cobrar no PIX:</p>
+                    <p className="text-3xl font-black text-teal-600 dark:text-teal-400">{formatCurrency(cartTotal)}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">Nome do Aluno</label>
+                    <input type="text" value={pixStudentName} onChange={e => setPixStudentName(e.target.value)} placeholder="Ex: João da Silva" className="w-full p-3 bg-gray-50 dark:bg-gray-900 border dark:border-gray-600 rounded-xl outline-none" autoFocus />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">Série / Turma</label>
+                    <input type="text" value={pixStudentClass} onChange={e => setPixStudentClass(e.target.value)} placeholder="Ex: 3º Ano B" className="w-full p-3 bg-gray-50 dark:bg-gray-900 border dark:border-gray-600 rounded-xl outline-none" />
+                  </div>
+                </div>
+                <div className="p-4 flex gap-3 bg-gray-50 dark:bg-gray-800/80">
+                  <button onClick={() => setIsPixModalOpen(false)} className="flex-1 py-3 bg-gray-200 dark:bg-gray-700 rounded-xl font-bold hover:bg-gray-300">Cancelar</button>
+                  <button onClick={() => processCheckout('PIX')} className="flex-1 py-3 bg-teal-500 text-white rounded-xl font-bold hover:bg-teal-600">Confirmar</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ================= BARRA LATERAL ================= */}
+          <aside className="w-20 md:w-64 border-r dark:border-gray-800 flex flex-col p-4 shadow-sm print:hidden transition-all duration-300 z-10 shrink-0 h-screen overflow-y-auto bg-white dark:bg-gray-900 relative">
+            <div className="flex items-center gap-3 px-2 mb-8 mt-2 text-blue-600 dark:text-blue-500">
+              <img src={settings.logoUrl} alt="Logo" className="w-10 h-10 rounded-full object-cover border-2 border-current shrink-0 bg-white" />
+              <div className="hidden md:block overflow-hidden">
+                <h1 className="text-sm font-bold tracking-tight text-ellipsis whitespace-nowrap text-gray-800 dark:text-gray-200">
+                  {settings.gremioName}
+                </h1>
+                <p className="text-xs text-blue-600 truncate">{settings.eventName}</p>
+              </div>
+            </div>
+
+            <nav className="flex-1 space-y-2">
+              <NavItem id="pos" icon={ShoppingCart} label="Caixa (PDV)" />
+              <NavItem id="products" icon={Tag} label="Cardápio" />
+              <NavItem id="history" icon={History} label="Histórico Atual" />
+              <NavItem id="report" icon={LayoutDashboard} label="Relatório de Vendas" />
+              <NavItem id="closing" icon={Lock} label="Fechamento (Gaveta)" />
+            </nav>
+
+            <div className="mt-auto space-y-2 pt-4 border-t border-gray-200 dark:border-gray-800">
+              {sessionId && (
+                <div className="mb-2 flex items-center justify-center gap-2 text-xs font-bold text-green-600 bg-green-50 dark:bg-green-900/30 p-2 rounded-lg">
+                  <Wifi size={14}/> <span className="hidden md:block">Nuvem: {sessionId}</span>
+                </div>
+              )}
+              <button onClick={() => setIsCalcOpen(!isCalcOpen)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <Calculator size={20}/> <span className="hidden md:block font-medium">Calculadora</span>
+              </button>
+              <NavItem id="settings" icon={Settings} label="Configurações" />
+              <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                {theme === 'dark' ? <Sun size={20}/> : <Moon size={20}/>}
+                <span className="hidden md:block font-medium capitalize">Modo {theme === 'dark' ? 'Claro' : 'Escuro'}</span>
+              </button>
+            </div>
+          </aside>
+
+          {/* ================= ÁREA DE CONTEÚDO PRINCIPAL ================= */}
+          <main className="flex-1 flex flex-col h-screen overflow-hidden print:h-auto print:overflow-visible relative">
+            <div className="flex-1 overflow-y-auto p-4 md:p-6 print:p-0">
+              
+              {/* === CAIXA (PDV) === */}
+              {activeTab === 'pos' && (
+                <div className="flex flex-col lg:flex-row gap-6 h-full print:hidden">
+                  <div className="flex-1 flex flex-col">
+                    <div className="flex justify-between items-center mb-4">
+                      <h2 className="text-2xl font-bold">Frente de Caixa</h2>
+                      <span className="text-sm text-gray-500">{products.length} produtos</span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto pb-4 pr-2">
+                      {products.map(p => (
+                        <button key={p.id} onClick={() => addToCart(p)} className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-sm hover:border-blue-400 transition-all active:scale-95 group">
+                          <span className="font-semibold mb-2 group-hover:text-blue-500">{p.name}</span>
+                          <span className="text-blue-700 dark:text-blue-300 font-bold bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-lg">{formatCurrency(p.price)}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="w-full lg:w-96 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl shadow-sm flex flex-col h-[600px] lg:h-full shrink-0">
+                    <div className="p-4 border-b dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 rounded-t-2xl">
+                      <h3 className="text-lg font-bold flex justify-between items-center">
+                        Comanda Atual
+                        <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded-full">{cart.reduce((sum, i) => sum + i.quantity, 0)} itens</span>
+                      </h3>
+                    </div>
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                      {cart.map(item => (
+                        <div key={item.product.id} className="flex justify-between items-center bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl border dark:border-gray-700">
+                          <div className="flex-1 pr-2">
+                            <p className="font-semibold text-sm">{item.product.name}</p>
+                            <p className="text-xs text-gray-500">{formatCurrency(item.product.price)}</p>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-600 shadow-sm">
+                              <button onClick={() => removeFromCart(item.product.id)} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30"><MinusCircle size={16}/></button>
+                              <span className="w-6 text-center font-bold text-sm">{item.quantity}</span>
+                              <button onClick={() => addToCart(item.product)} className="p-1.5 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30"><PlusCircle size={16}/></button>
+                            </div>
+                            <div className="font-bold text-sm w-16 text-right">{formatCurrency(item.product.price * item.quantity)}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="p-4 bg-gray-50 dark:bg-gray-800/80 border-t dark:border-gray-700 rounded-b-2xl">
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-sm font-medium">Desconto (R$):</span>
+                        <input type="number" min="0" step="0.5" value={cartDiscount || ''} onChange={e => setCartDiscount(Number(e.target.value))} className="w-24 text-right p-1 border dark:border-gray-600 rounded bg-white dark:bg-gray-700 outline-none" placeholder="0.00" />
+                      </div>
+                      <div className="flex justify-between items-end mb-4">
+                        <span className="font-medium">Total a Pagar:</span>
+                        <div className="text-right">
+                          {cartDiscount > 0 && <span className="text-sm text-gray-400 line-through block">{formatCurrency(cartSubtotal)}</span>}
+                          <span className="text-3xl font-black text-blue-600 dark:text-blue-400">{formatCurrency(cartTotal)}</span>
+                        </div>
+                      </div>
+                      {checkoutMsg && <div className="mb-4 bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 p-3 rounded-xl text-sm font-medium flex justify-center gap-2 animate-pulse"><CheckCircle size={18} /> {checkoutMsg}</div>}
+                      <div className="grid grid-cols-2 gap-2">
+                        <button onClick={() => processCheckout('DINHEIRO')} disabled={cart.length===0} className="bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-bold flex flex-col items-center justify-center gap-1 active:scale-95 disabled:opacity-50"><Banknote size={20} /> <span className="text-xs">Dinheiro</span></button>
+                        <button onClick={handlePixClick} disabled={cart.length===0} className="bg-teal-500 hover:bg-teal-600 text-white py-3 rounded-xl font-bold flex flex-col items-center justify-center gap-1 active:scale-95 disabled:opacity-50"><CreditCard size={20} /> <span className="text-xs">PIX</span></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* === CARDÁPIO (PRODUTOS) === */}
+              {activeTab === 'products' && (
+                <div className="max-w-4xl mx-auto print:hidden">
+                  <h2 className="text-2xl font-bold mb-6">Gerenciar Cardápio</h2>
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border dark:border-gray-700 overflow-hidden mb-8">
+                    <form onSubmit={saveProduct} className="p-5 flex flex-col md:flex-row gap-4 items-end">
+                      <div className="flex-1 w-full">
+                        <label className="block text-sm font-semibold mb-1">Nome do Produto</label>
+                        <input type="text" value={prodName} onChange={e => setProdName(e.target.value)} required className="w-full p-3 bg-gray-50 dark:bg-gray-900 border dark:border-gray-700 rounded-xl outline-none" />
+                      </div>
+                      <div className="w-full md:w-40">
+                        <label className="block text-sm font-semibold mb-1">Preço (R$)</label>
+                        <input type="number" step="0.01" min="0" value={prodPrice} onChange={e => setProdPrice(e.target.value)} required className="w-full p-3 bg-gray-50 dark:bg-gray-900 border dark:border-gray-700 rounded-xl outline-none" />
+                      </div>
+                      <div className="flex gap-2">
+                        {editingProduct && <button type="button" onClick={() => {setEditingProduct(null); setProdName(''); setProdPrice('');}} className="p-3 bg-gray-200 dark:bg-gray-700 rounded-xl font-bold">Cancelar</button>}
+                        <button type="submit" className="p-3 bg-blue-600 text-white rounded-xl font-bold flex items-center gap-2"><CheckCircle size={20} /> Salvar</button>
+                      </div>
+                    </form>
+                  </div>
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border dark:border-gray-700 overflow-hidden">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-gray-50 dark:bg-gray-900/50 border-b dark:border-gray-700 text-sm text-gray-500">
+                          <th className="p-4">Produto</th><th className="p-4 w-32">Preço</th><th className="p-4 w-24 text-center">Ações</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y dark:divide-gray-700">
+                        {products.map(p => (
+                          <tr key={p.id}>
+                            <td className="p-4 font-medium">{p.name}</td>
+                            <td className="p-4 font-bold text-green-600 dark:text-green-400">{formatCurrency(p.price)}</td>
+                            <td className="p-4 flex justify-center gap-2">
+                              <button onClick={() => {setEditingProduct(p); setProdName(p.name); setProdPrice(p.price);}} className="p-2 text-blue-500 bg-blue-50 dark:bg-blue-900/30 rounded-lg"><Edit2 size={18}/></button>
+                              <button onClick={() => deleteProduct(p.id)} className="p-2 text-red-500 bg-red-50 dark:bg-red-900/30 rounded-lg"><Trash2 size={18}/></button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* === HISTÓRICO DE VENDAS === */}
+              {activeTab === 'history' && (
+                <div className="max-w-4xl mx-auto print:hidden">
+                  <h2 className="text-2xl font-bold mb-6">Histórico de Transações do Evento</h2>
+                  <div className="space-y-4">
+                    {sales.length === 0 && <p className="text-gray-500">Nenhuma venda registrada neste evento ainda.</p>}
+                    {sales.map(sale => (
+                      <div key={sale.id} className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl p-5 flex flex-col md:flex-row justify-between items-start md:items-center shadow-sm">
+                        <div>
+                          <div className="flex gap-3 mb-2">
+                            <span className={`px-2 py-1 rounded text-xs font-bold ${sale.paymentMethod === 'PIX' ? 'bg-teal-100 dark:bg-teal-900/50 text-teal-800 dark:text-teal-300' : 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300'}`}>{sale.paymentMethod}</span>
+                            <span className="text-sm text-gray-500">{formatDate(sale.timestamp)}</span>
+                            {sale.studentInfo && <span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-md">👤 {sale.studentInfo.name} ({sale.studentInfo.schoolClass})</span>}
+                          </div>
+                          <p className="text-sm">{sale.items.map(i => `${i.quantity}x ${i.product.name}`).join(' • ')}</p>
+                        </div>
+                        <div className="flex items-center gap-4 mt-3 md:mt-0">
+                          <span className="text-xl font-black">{formatCurrency(sale.total)}</span>
+                          <button onClick={() => cancelSale(sale.id)} className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 p-2 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors"><RotateCcw size={16} /> Estornar</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* === ABA: RELATÓRIO DE VENDAS === */}
+              {(activeTab === 'report') && (
+                <div className="max-w-4xl mx-auto">
+                  <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6 flex justify-between items-center print:hidden">
+                    <div>
+                      <h2 className="text-xl font-bold">Resumo de Vendas</h2>
+                      <p className="text-sm text-gray-500">Dados gerados pelo sistema</p>
+                    </div>
+                    <div className="flex gap-3">
+                      <button onClick={requestPrint} className="bg-gray-800 hover:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-500 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 transition-colors">
+                        <Printer size={18} /> Imprimir
+                      </button>
+                      <button onClick={() => downloadPDF('report-pdf-content', 'Relatorio_Vendas')} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 transition-colors">
+                        <Download size={18} /> Baixar PDF
+                      </button>
+                    </div>
+                  </div>
+
+                  <div id="report-pdf-content" className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200 print:border-none print:shadow-none space-y-8 print:bg-white !text-black text-black">
+                    <div className="text-center border-b-2 border-gray-300 pb-4 flex flex-col items-center">
+                      <img src={settings.logoUrl} alt="Logo Grêmio" className="w-16 h-16 rounded-full object-cover border-2 border-gray-300 mb-3" />
+                      <h1 className="text-3xl font-black uppercase">{settings.gremioName}</h1>
+                      <h2 className="text-xl font-bold text-gray-700 mt-1">{settings.eventName}</h2>
+                      <p className="text-lg mt-1">Relatório Geral de Vendas</p>
+                      <p className="text-sm mt-2 text-gray-600">Gerado em: {formatDate(new Date().toISOString())}</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="bg-gray-50 print:bg-gray-50 p-5 rounded-xl border-l-4 border-l-blue-500 border border-gray-200">
+                        <p className="text-xs font-bold uppercase text-gray-600 mb-1">Bruto Total</p>
+                        <p className="text-2xl font-black">{formatCurrency(reportData.total)}</p>
+                      </div>
+                      <div className="bg-gray-50 print:bg-gray-50 p-5 rounded-xl border-l-4 border-l-teal-500 border border-gray-200">
+                        <p className="text-xs font-bold uppercase text-gray-600 mb-1">Total PIX</p>
+                        <p className="text-2xl font-black">{formatCurrency(reportData.pix)}</p>
+                      </div>
+                      <div className="bg-gray-50 print:bg-gray-50 p-5 rounded-xl border-l-4 border-l-emerald-500 border border-gray-200">
+                        <p className="text-xs font-bold uppercase text-gray-600 mb-1">Total Dinheiro</p>
+                        <p className="text-2xl font-black">{formatCurrency(reportData.dinheiro)}</p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-bold border-b border-gray-300 pb-2 mb-4">Produtos Vendidos</h3>
+                      <table className="w-full text-left">
+                        <thead className="text-xs uppercase text-gray-600 border-b border-gray-300">
+                          <tr><th className="py-2">Produto</th><th className="py-2 text-center">Qtd</th><th className="py-2 text-right">Receita</th></tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {Object.values(reportData.items).map((item, idx) => (
+                            <tr key={idx}>
+                              <td className="py-2 font-medium">{item.name}</td>
+                              <td className="py-2 text-center font-bold text-blue-700">{item.quantity}</td>
+                              <td className="py-2 text-right">{formatCurrency(item.total)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="mt-20 pt-16 flex flex-col md:flex-row justify-around text-center text-sm font-semibold text-black gap-8">
+                      <div>
+                        <p>_____________________________________</p>
+                        <p className="mt-2">Coordenador Geral</p>
+                      </div>
+                      <div>
+                        <p>_____________________________________</p>
+                        <p className="mt-2">Coordenador Financeiro</p>
+                      </div>
+                      <div>
+                        <p>_____________________________________</p>
+                        <p className="mt-2">Operador de Caixa</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* === ABA: FECHAMENTO DE GAVETA === */}
+              {(activeTab === 'closing') && (
+                <div className="max-w-4xl mx-auto">
+                  <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6 flex justify-between items-center print:hidden">
+                    <div>
+                      <h2 className="text-xl font-bold">Fechamento Físico</h2>
+                      <p className="text-sm text-gray-500">Conferência da gaveta de dinheiro</p>
+                    </div>
+                    <div className="flex gap-3">
+                      <button onClick={requestPrint} className="bg-gray-800 hover:bg-gray-700 dark:bg-gray-600 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2">
+                        <Printer size={18} /> Imprimir
+                      </button>
+                      <button onClick={() => downloadPDF('closing-pdf-content', 'Fechamento_Gaveta')} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2">
+                        <Download size={18} /> Baixar PDF
+                      </button>
+                    </div>
+                  </div>
+
+                  <div id="closing-pdf-content" className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200 print:border-none print:shadow-none space-y-8 print:bg-white !text-black text-black">
+                    <div className="text-center border-b-2 border-gray-300 pb-4 flex flex-col items-center">
+                      <img src={settings.logoUrl} alt="Logo Grêmio" className="w-16 h-16 rounded-full object-cover border-2 border-gray-300 mb-3" />
+                      <h1 className="text-3xl font-black uppercase">{settings.gremioName}</h1>
+                      <h2 className="text-xl font-bold text-gray-700 mt-1">{settings.eventName}</h2>
+                      <p className="text-lg mt-1">Fechamento de Caixa (Gaveta)</p>
+                      <p className="text-sm mt-2 text-gray-600">Gerado em: {formatDate(new Date().toISOString())}</p>
+                    </div>
+                    
+                    <div className="print:hidden">
+                      <p className="text-sm text-gray-600 mb-4">Preencha as quantidades de cada nota/moeda física que está no caixa agora.</p>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        {Object.keys(cashDrawer).sort((a,b)=>b-a).map(val => (
+                          <div key={val} className="flex items-center justify-between bg-gray-50 border border-gray-300 p-2 rounded-lg shadow-sm">
+                            <span className="text-xs font-bold text-gray-700">R$ {Number(val).toFixed(2)}</span>
+                            <input 
+                              type="number" min="0" step="1" 
+                              value={cashDrawer[val] || ''} 
+                              onChange={(e) => setCashDrawer({...cashDrawer, [val]: Number(e.target.value)})}
+                              className="w-16 p-1 text-center bg-white border border-gray-300 rounded outline-none font-mono font-bold"
+                              placeholder="0"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row justify-between items-center bg-gray-50 print:bg-gray-50 p-6 rounded-xl shadow-sm border border-gray-300">
+                      <div className="text-center md:text-left mb-4 md:mb-0">
+                        <p className="text-xs uppercase font-bold text-gray-600">Valor Físico Contado</p>
+                        <p className="text-3xl font-black text-emerald-700">{formatCurrency(drawerTotal)}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs uppercase font-bold text-gray-600">Registrado no Sistema</p>
+                        <p className="text-xl font-bold text-gray-800">{formatCurrency(reportData.dinheiro)}</p>
+                      </div>
+                      <div className="text-center md:text-right mt-4 md:mt-0">
+                        <p className="text-xs uppercase font-bold text-gray-600">Diferença de Caixa</p>
+                        {drawerDiff === 0 ? (
+                          <p className="text-2xl font-bold text-green-700">Bateu Perfeito (+R$ 0,00)</p>
+                        ) : drawerDiff > 0 ? (
+                          <p className="text-2xl font-bold text-blue-700">Sobra: {formatCurrency(drawerDiff)}</p>
+                        ) : (
+                          <p className="text-2xl font-bold text-red-700">Falta (Quebra): {formatCurrency(Math.abs(drawerDiff))}</p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="mt-20 pt-16 flex flex-col md:flex-row justify-around text-center text-sm font-semibold text-black gap-8">
+                      <div>
+                        <p>_____________________________________</p>
+                        <p className="mt-2">Coordenador Geral</p>
+                      </div>
+                      <div>
+                        <p>_____________________________________</p>
+                        <p className="mt-2">Coordenador Financeiro</p>
+                      </div>
+                      <div>
+                        <p>_____________________________________</p>
+                        <p className="mt-2">Operador de Caixa</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* === CONFIGURAÇÕES === */}
+              {activeTab === 'settings' && (
+                <div className="max-w-3xl mx-auto print:hidden space-y-6">
+                  <h2 className="text-2xl font-bold mb-6">Configurações do Sistema</h2>
+                  
+                  {/* SINCRONIZAÇÃO NUVEM (NOVO) */}
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border dark:border-gray-700 p-6 space-y-4">
+                    <h3 className="font-bold text-lg border-b dark:border-gray-700 pb-2 flex items-center justify-between">
+                      <span className="flex items-center gap-2"><Cloud size={20}/> Conexão em Nuvem (Multi-Dispositivos)</span>
+                      {sessionId ? <span className="flex items-center gap-1 text-sm bg-green-100 text-green-700 px-2 py-1 rounded"><Wifi size={16}/> Online</span> : <span className="flex items-center gap-1 text-sm bg-gray-200 text-gray-600 px-2 py-1 rounded"><WifiOff size={16}/> Offline</span>}
+                    </h3>
+                    
+                    {sessionId ? (
+                      <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">Você está conectado à sessão:</p>
+                          <p className="text-3xl font-black text-blue-600 dark:text-blue-400 font-mono tracking-widest">{sessionId}</p>
+                        </div>
+                        <button onClick={disconnectSession} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg w-full md:w-auto transition-colors">
+                          Desconectar
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col md:flex-row gap-6">
+                        <div className="flex-1 space-y-3">
+                          <p className="text-sm text-gray-600 dark:text-gray-400">Crie uma nova sala para que outros caixas conectem.</p>
+                          <button onClick={createCloudSession} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl flex justify-center items-center gap-2 transition-colors">
+                            <PlusCircle size={20}/> Criar Nova Sessão
+                          </button>
+                        </div>
+                        <div className="flex-1 space-y-3 border-t md:border-t-0 md:border-l dark:border-gray-700 pt-4 md:pt-0 md:pl-6">
+                          <p className="text-sm text-gray-600 dark:text-gray-400">Ou entre em uma sessão existente (Digite o código):</p>
+                          <div className="flex gap-2">
+                            <input 
+                              type="text" value={joinCode} onChange={(e) => setJoinCode(e.target.value.toUpperCase())} maxLength={6}
+                              placeholder="CÓDIGO" 
+                              className="w-full p-3 bg-gray-50 dark:bg-gray-900 border dark:border-gray-600 rounded-xl outline-none font-mono text-center font-bold" 
+                            />
+                            <button onClick={joinCloudSession} className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-4 rounded-xl transition-colors">
+                              Entrar
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Identidade Visual */}
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border dark:border-gray-700 p-6 space-y-4">
+                    <h3 className="font-bold text-lg border-b dark:border-gray-700 pb-2 flex items-center gap-2"><ImageIcon size={20}/> Identidade Visual</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-semibold mb-2">Nome do Grêmio / Organização</label>
+                        <input type="text" value={settings.gremioName} onChange={e => setSettings({...settings, gremioName: e.target.value})} className="w-full p-3 bg-gray-50 dark:bg-gray-900 border dark:border-gray-600 rounded-xl outline-none" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold mb-2">Nome do Evento Atual</label>
+                        <input type="text" value={settings.eventName} onChange={e => setSettings({...settings, eventName: e.target.value})} className="w-full p-3 bg-gray-50 dark:bg-gray-900 border dark:border-gray-600 rounded-xl outline-none" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">URL da Logo (Imagem)</label>
+                      <input type="url" value={settings.logoUrl} onChange={e => setSettings({...settings, logoUrl: e.target.value})} className="w-full p-3 bg-gray-50 dark:bg-gray-900 border dark:border-gray-600 rounded-xl outline-none" />
+                    </div>
+                  </div>
+
+                  {/* Gerenciamento de Eventos (Logs) */}
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border dark:border-gray-700 p-6">
+                     <h3 className="font-bold text-lg border-b dark:border-gray-700 pb-2 mb-4 flex items-center gap-2"><Archive size={20}/> Gerenciamento de Eventos</h3>
+                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                       Finalizou o evento de hoje? Arquive as vendas para limpar o caixa e guardar os registros no histórico.
+                     </p>
+                     <button onClick={() => {
+                        if(sales.length === 0) return setAlertDialog({isOpen: true, title: 'Aviso', text: 'Não há vendas neste evento para arquivar.'});
+                        setConfirmDialog({
+                          isOpen: true, title: 'Arquivar Evento', text: `Deseja encerrar o evento "${settings.eventName}" e salvar os logs? O caixa será zerado para o próximo evento.`, isDanger: false,
+                          action: () => {
+                            const newLog = {
+                              id: Date.now().toString(),
+                              eventName: settings.eventName,
+                              date: new Date().toISOString(),
+                              totalSales: getReport(sales).total,
+                              salesCount: sales.length,
+                              salesData: [...sales]
+                            };
+                            setEventLogs([newLog, ...eventLogs]);
+                            setSales([]);
+                            setCashDrawer(defaultDrawer);
+                            setSettings({...settings, eventName: 'Novo Evento'});
+                            setAlertDialog({isOpen: true, title: 'Sucesso', text: 'Evento salvo nos logs e caixa zerado com sucesso!'});
+                          }
+                        });
+                     }} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl flex items-center gap-2 transition-colors">
+                       <Archive size={20}/> Encerrar Evento Atual e Arquivar
+                     </button>
+
+                     {/* Tabela de Logs Antigos */}
+                     {eventLogs.length > 0 && (
+                       <div className="mt-8">
+                         <h4 className="font-bold mb-3">Histórico de Eventos Anteriores</h4>
+                         <div className="overflow-x-auto">
+                           <table className="w-full text-left text-sm border dark:border-gray-700 rounded-lg overflow-hidden">
+                             <thead className="bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400">
+                               <tr><th className="p-3">Data</th><th className="p-3">Evento</th><th className="p-3">Vendas</th><th className="p-3">Faturamento</th><th className="p-3 text-center">Ação</th></tr>
+                             </thead>
+                             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                               {eventLogs.map(log => (
+                                 <tr key={log.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                                   <td className="p-3 whitespace-nowrap">{new Date(log.date).toLocaleDateString('pt-BR')}</td>
+                                   <td className="p-3 font-medium">{log.eventName}</td>
+                                   <td className="p-3">{log.salesCount}</td>
+                                   <td className="p-3 font-bold text-green-600 dark:text-green-400">{formatCurrency(log.totalSales)}</td>
+                                   <td className="p-3 text-center">
+                                      <button onClick={() => setSelectedEventLog(log)} className="text-blue-500 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-lg font-bold hover:bg-blue-100 flex items-center gap-1 mx-auto transition-colors">
+                                        <FileText size={14}/> Abrir
+                                      </button>
+                                   </td>
+                                 </tr>
+                               ))}
+                             </tbody>
+                           </table>
+                         </div>
+                       </div>
+                     )}
+                  </div>
+
+                  {/* Zona de Perigo */}
+                  <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-800/50 p-6">
+                    <h3 className="font-bold text-red-800 dark:text-red-400 mb-2 flex items-center gap-2"><AlertTriangle/> Zona de Perigo (Hard Reset)</h3>
+                    <p className="text-sm text-red-600 dark:text-red-300 mb-4">Isto apagará todas as vendas do evento atual, apagará o histórico de logs salvos e resetará a gaveta de dinheiro.</p>
+                    <button onClick={() => {
+                        setConfirmDialog({
+                          isOpen: true, title: 'Zerar Todo o Sistema', text: 'Você tem certeza absoluta? Todo o histórico atual, logs de eventos anteriores e dados da gaveta serão perdidos permanentemente.', isDanger: true,
+                          action: () => {
+                            setSales([]);
+                            setEventLogs([]);
+                            setCashDrawer(defaultDrawer); 
+                            setActiveTab('pos');
+                          }
+                        });
+                    }} className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-colors">
+                      Excluir Todos os Dados e Resetar
+                    </button>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          </main>
+        </div>
+      );
+    }
+
+    const root = createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
 </body>
 </html>
