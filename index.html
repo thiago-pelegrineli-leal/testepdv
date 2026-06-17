@@ -17,29 +17,20 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@18.2.0",
-        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-        "lucide-react": "https://esm.sh/lucide-react@0.330.0?deps=react@18.2.0"
-      }
-    }
-  </script>
 </head>
 <body class="transition-colors duration-300 bg-gray-100 dark:bg-gray-950 text-gray-800 dark:text-gray-100">
   <div id="root"></div>
 
   <script type="text/babel" data-type="module">
-    import React, { useState, useEffect, useRef } from 'react';
-    import { createRoot } from 'react-dom/client';
+    // Imports diretos via CDN para evitar o erro de tela branca do importmap
+    import React, { useState, useEffect, useRef } from 'https://esm.sh/react@18.2.0';
+    import { createRoot } from 'https://esm.sh/react-dom@18.2.0/client';
     import { 
       ShoppingCart, Settings, Tag, PlusCircle, MinusCircle, CheckCircle, 
       CreditCard, Banknote, X, Edit2, Trash2, RotateCcw, LayoutDashboard, 
       History, Printer, Download, Calculator, Lock, Sun, Moon, AlertTriangle, Info,
       GripHorizontal, Archive, Image as ImageIcon
-    } from 'lucide-react';
+    } from 'https://esm.sh/lucide-react@0.330.0?deps=react@18.2.0';
 
     function App() {
       // --- GERENCIAMENTO DE ESTADO E LOCALSTORAGE ---
@@ -74,7 +65,7 @@
       };
       const [cashDrawer, setCashDrawer] = useState(() => loadData('pdv_cash_drawer', defaultDrawer));
 
-      // Modais Customizados (Pop-ups em vez de Alerts)
+      // Modais Customizados
       const [isCalcOpen, setIsCalcOpen] = useState(false);
       const [calcInput, setCalcInput] = useState('');
       const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', text: '', action: null, isDanger: false });
@@ -242,7 +233,6 @@
       const calcPos = useRef({ x: window.innerWidth > 768 ? window.innerWidth - 300 : 20, y: 20 });
       const calcRef = useRef(null);
 
-      // Correção do Bug de Coordenadas de Drag
       const handleCalcDragStart = (e) => {
         const isTouch = e.type.includes('touch');
         const startX = isTouch ? e.touches[0].clientX : e.clientX;
@@ -277,14 +267,13 @@
         document.addEventListener('touchend', onEnd);
       };
 
-      // Correção de Segurança no Parse Matemático
       const handleCalcBtn = (btn) => {
         if(btn === 'C') setCalcInput('');
         else if(btn === '=') { 
           try { 
             let evalStr = calcInput.replace(/×/g, '*').replace(/÷/g, '/').replace(/,/g, '.');
             let res = new Function(`return ${evalStr}`)();
-            if(!isFinite(res)) throw new Error('Inválido');
+            if(!isFinite(res)) throw new Error();
             setCalcInput(res.toString().replace(/\./g, ',')); 
           } catch(e) { 
             setCalcInput('Erro'); 
@@ -796,7 +785,7 @@
                             setSales([]);
                             setCashDrawer(defaultDrawer);
                             setSettings({...settings, eventName: 'Novo Evento'});
-                            setAlertDialog({isOpen: true, title: 'Sucesso', text: 'Evento salvo nos logs e caixa zerado com sucesso!'});
+                            setAlertDialog({isOpen: true, title: 'Sucesso', text: 'Evento saved nos logs e caixa zerado com sucesso!'});
                           }
                         });
                      }} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl flex items-center gap-2 shadow-sm transition-colors">
@@ -860,4 +849,3 @@
   </script>
 </body>
 </html>
-
