@@ -51,8 +51,8 @@
       const [theme, setTheme] = useState(() => loadData('pdv_theme', 'light'));
       
       const defaultSettings = { 
-        eventName: 'Evento Atual', 
-        gremioName: 'Grêmio Estudantil',
+        eventName: 'Caixa Principal', 
+        gremioName: 'Geração Consciente - E.E. Profº João Teixeira Sampaio',
         logoUrl: 'https://media-gru1-1.cdn.whatsapp.net/v/t61.24694-24/489405406_650586094569182_6793834854762065392_n.jpg?ccb=11-4&oh=01_Q5Aa4wGY7p0SayjbDIPzs9zg4cRQqjwpuZWHtXDXiacRVfJnLw&oe=6A35BF57&_nc_sid=5e03e0&_nc_cat=102'
       };
       
@@ -74,7 +74,7 @@
       };
       const [cashDrawer, setCashDrawer] = useState(() => loadData('pdv_cash_drawer', defaultDrawer));
 
-      // Modais Customizados
+      // Modais Customizados (Pop-ups em vez de Alerts)
       const [isCalcOpen, setIsCalcOpen] = useState(false);
       const [calcInput, setCalcInput] = useState('');
       const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', text: '', action: null, isDanger: false });
@@ -125,7 +125,7 @@
       };
 
       const cartSubtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-      const cartTotal = Math.max(0, cartSubtotal - cartDiscount);
+      const cartTotal = Math.max(0, cartSubtotal - (cartDiscount || 0));
 
       const handlePixClick = () => {
         if (cart.length === 0) return;
@@ -136,7 +136,7 @@
         if (cart.length === 0) return;
         
         if (paymentMethod === 'PIX' && (!pixStudentName.trim() || !pixStudentClass.trim())) {
-          setAlertDialog({ isOpen: true, title: 'Atenção', text: 'Por favor, preencha o Nome e a Série do aluno.'});
+          setAlertDialog({ isOpen: true, title: 'Atenção', text: 'Por favor, preencha o Nome e a Série do aluno para controle do PIX.'});
           return;
         }
 
@@ -202,7 +202,6 @@
         }, { total: 0, pix: 0, dinheiro: 0, discounts: 0, items: {} });
       };
 
-      // Funcionalidade de Impressão (Força tema claro)
       const executeWithLightMode = (callback) => {
         const wasDark = document.documentElement.classList.contains('dark');
         if (wasDark) document.documentElement.classList.remove('dark');
@@ -217,7 +216,6 @@
       const requestPrint = () => {
         executeWithLightMode((restoreTheme) => {
           window.print();
-          // Timeout de segurança após a janela de impressão abrir
           setTimeout(restoreTheme, 1000); 
         });
       };
@@ -244,15 +242,19 @@
       const calcPos = useRef({ x: window.innerWidth > 768 ? window.innerWidth - 300 : 20, y: 20 });
       const calcRef = useRef(null);
 
+      // Correção do Bug de Coordenadas de Drag
       const handleCalcDragStart = (e) => {
-        const startX = e.clientX || e.touches[0].clientX;
-        const startY = e.clientY || e.touches[0].clientY;
+        const isTouch = e.type.includes('touch');
+        const startX = isTouch ? e.touches[0].clientX : e.clientX;
+        const startY = isTouch ? e.touches[0].clientY : e.clientY;
         const startPosX = calcPos.current.x;
         const startPosY = calcPos.current.y;
 
         const onMove = (moveEvent) => {
-          const currentX = moveEvent.clientX || (moveEvent.touches && moveEvent.touches[0].clientX);
-          const currentY = moveEvent.clientY || (moveEvent.touches && moveEvent.touches[0].clientY);
+          const isTouchMove = moveEvent.type.includes('touch');
+          const currentX = isTouchMove ? moveEvent.touches[0].clientX : moveEvent.clientX;
+          const currentY = isTouchMove ? moveEvent.touches[0].clientY : moveEvent.clientY;
+          
           calcPos.current = {
             x: startPosX + (currentX - startX),
             y: startPosY + (currentY - startY)
@@ -275,12 +277,14 @@
         document.addEventListener('touchend', onEnd);
       };
 
+      // Correção de Segurança no Parse Matemático
       const handleCalcBtn = (btn) => {
         if(btn === 'C') setCalcInput('');
         else if(btn === '=') { 
           try { 
             let evalStr = calcInput.replace(/×/g, '*').replace(/÷/g, '/').replace(/,/g, '.');
-            let res = eval(evalStr);
+            let res = new Function(`return ${evalStr}`)();
+            if(!isFinite(res)) throw new Error('Inválido');
             setCalcInput(res.toString().replace(/\./g, ',')); 
           } catch(e) { 
             setCalcInput('Erro'); 
@@ -309,12 +313,12 @@
           {/* Alerta Simples */}
           {alertDialog.isOpen && (
             <div className="absolute inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm print:hidden">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm p-6 animate-in zoom-in-95">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm p-6 animate-in zoom-in-95 border dark:border-gray-700">
                 <div className="flex items-center gap-3 mb-4 text-blue-600 dark:text-blue-400">
                   <Info size={28}/> <h3 className="text-xl font-bold">{alertDialog.title}</h3>
                 </div>
                 <p className="text-gray-700 dark:text-gray-300 mb-6">{alertDialog.text}</p>
-                <button onClick={() => setAlertDialog({isOpen: false})} className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-colors">
+                <button onClick={() => setAlertDialog({isOpen: false})} className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-colors shadow-sm">
                   Entendi
                 </button>
               </div>
@@ -324,7 +328,7 @@
           {/* Confirmação (Sim/Não) */}
           {confirmDialog.isOpen && (
             <div className="absolute inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm print:hidden">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm p-6 animate-in zoom-in-95">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm p-6 animate-in zoom-in-95 border dark:border-gray-700">
                 <div className={`flex items-center gap-3 mb-4 ${confirmDialog.isDanger ? 'text-red-500' : 'text-blue-600 dark:text-blue-400'}`}>
                   {confirmDialog.isDanger ? <AlertTriangle size={28}/> : <Info size={28}/>} 
                   <h3 className="text-xl font-bold">{confirmDialog.title}</h3>
@@ -334,7 +338,7 @@
                   <button onClick={() => setConfirmDialog({...confirmDialog, isOpen: false})} className="flex-1 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-xl font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
                     Cancelar
                   </button>
-                  <button onClick={() => { confirmDialog.action(); setConfirmDialog({...confirmDialog, isOpen: false}); }} className={`flex-1 py-3 text-white rounded-xl font-bold transition-colors ${confirmDialog.isDanger ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'}`}>
+                  <button onClick={() => { confirmDialog.action(); setConfirmDialog({...confirmDialog, isOpen: false}); }} className={`flex-1 py-3 text-white rounded-xl font-bold transition-colors shadow-sm ${confirmDialog.isDanger ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'}`}>
                     Confirmar
                   </button>
                 </div>
@@ -342,16 +346,15 @@
             </div>
           )}
 
-          {/* Calculadora Flutuante e Móvel */}
+          {/* Calculadora Flutuante */}
           {isCalcOpen && (
             <div 
               ref={calcRef}
               style={{ transform: `translate(${calcPos.current.x}px, ${calcPos.current.y}px)` }}
               className="fixed top-0 left-0 z-50 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 w-64 print:hidden animate-in fade-in overflow-hidden"
             >
-              {/* Header arrastável */}
               <div 
-                className="flex justify-between items-center p-3 bg-gray-100 dark:bg-gray-900 cursor-move border-b border-gray-200 dark:border-gray-700"
+                className="flex justify-between items-center p-3 bg-gray-100 dark:bg-gray-900 cursor-move border-b border-gray-200 dark:border-gray-700 select-none touch-none"
                 onMouseDown={handleCalcDragStart}
                 onTouchStart={handleCalcDragStart}
               >
@@ -359,7 +362,7 @@
                   <GripHorizontal size={16}/>
                   <span className="font-bold text-sm uppercase">Calculadora</span>
                 </div>
-                <button onClick={() => setIsCalcOpen(false)} className="text-gray-500 hover:text-red-500"><X size={18}/></button>
+                <button onClick={() => setIsCalcOpen(false)} className="text-gray-500 hover:text-red-500 transition-colors"><X size={18}/></button>
               </div>
               
               <div className="p-4">
@@ -370,7 +373,7 @@
                   {['7','8','9','÷','4','5','6','×','1','2','3','-','C','0',',','+'].map(btn => (
                     <button key={btn} onClick={() => handleCalcBtn(btn)} className={`p-3 rounded-lg font-bold text-lg transition-colors ${btn === 'C' ? 'bg-red-500 text-white hover:bg-red-600' : ['÷','×','-','+'].includes(btn) ? 'bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600' : 'bg-gray-50 dark:bg-gray-800 border dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700'}`}>{btn}</button>
                   ))}
-                  <button onClick={() => handleCalcBtn('=')} className="col-span-4 p-3 bg-blue-600 text-white rounded-lg font-bold text-lg hover:bg-blue-700 transition-colors">=</button>
+                  <button onClick={() => handleCalcBtn('=')} className="col-span-4 p-3 bg-blue-600 text-white rounded-lg font-bold text-lg hover:bg-blue-700 transition-colors shadow-sm">=</button>
                 </div>
               </div>
             </div>
@@ -379,7 +382,7 @@
           {/* Modal PIX */}
           {isPixModalOpen && (
             <div className="absolute inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm print:hidden">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 border dark:border-gray-700">
                 <div className="flex justify-between items-center p-4 border-b dark:border-gray-700 bg-teal-50 dark:bg-teal-900/30">
                   <h3 className="font-bold text-teal-800 dark:text-teal-400 flex items-center gap-2"><CreditCard size={20} /> Dados do PIX</h3>
                   <button onClick={() => setIsPixModalOpen(false)} className="text-gray-500 hover:text-gray-700 dark:text-gray-400"><X size={20} /></button>
@@ -399,8 +402,8 @@
                   </div>
                 </div>
                 <div className="p-4 flex gap-3 bg-gray-50 dark:bg-gray-800/80">
-                  <button onClick={() => setIsPixModalOpen(false)} className="flex-1 py-3 bg-gray-200 dark:bg-gray-700 rounded-xl font-bold hover:bg-gray-300">Cancelar</button>
-                  <button onClick={() => processCheckout('PIX')} className="flex-1 py-3 bg-teal-500 text-white rounded-xl font-bold hover:bg-teal-600">Confirmar</button>
+                  <button onClick={() => setIsPixModalOpen(false)} className="flex-1 py-3 bg-gray-200 dark:bg-gray-700 rounded-xl font-bold hover:bg-gray-300 transition-colors">Cancelar</button>
+                  <button onClick={() => processCheckout('PIX')} className="flex-1 py-3 bg-teal-500 text-white rounded-xl font-bold hover:bg-teal-600 transition-colors shadow-sm">Confirmar Pagamento</button>
                 </div>
               </div>
             </div>
@@ -499,8 +502,8 @@
                       </div>
                       {checkoutMsg && <div className="mb-4 bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 p-3 rounded-xl text-sm font-medium flex justify-center gap-2 animate-pulse"><CheckCircle size={18} /> {checkoutMsg}</div>}
                       <div className="grid grid-cols-2 gap-2">
-                        <button onClick={() => processCheckout('DINHEIRO')} disabled={cart.length===0} className="bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-bold flex flex-col items-center justify-center gap-1 active:scale-95 disabled:opacity-50"><Banknote size={20} /> <span className="text-xs">Dinheiro</span></button>
-                        <button onClick={handlePixClick} disabled={cart.length===0} className="bg-teal-500 hover:bg-teal-600 text-white py-3 rounded-xl font-bold flex flex-col items-center justify-center gap-1 active:scale-95 disabled:opacity-50"><CreditCard size={20} /> <span className="text-xs">PIX</span></button>
+                        <button onClick={() => processCheckout('DINHEIRO')} disabled={cart.length===0} className="bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-bold flex flex-col items-center justify-center gap-1 active:scale-95 disabled:opacity-50 transition-colors shadow-sm"><Banknote size={20} /> <span className="text-xs">Dinheiro</span></button>
+                        <button onClick={handlePixClick} disabled={cart.length===0} className="bg-teal-500 hover:bg-teal-600 text-white py-3 rounded-xl font-bold flex flex-col items-center justify-center gap-1 active:scale-95 disabled:opacity-50 transition-colors shadow-sm"><CreditCard size={20} /> <span className="text-xs">PIX</span></button>
                       </div>
                     </div>
                   </div>
@@ -523,7 +526,7 @@
                       </div>
                       <div className="flex gap-2">
                         {editingProduct && <button type="button" onClick={() => {setEditingProduct(null); setProdName(''); setProdPrice('');}} className="p-3 bg-gray-200 dark:bg-gray-700 rounded-xl font-bold">Cancelar</button>}
-                        <button type="submit" className="p-3 bg-blue-600 text-white rounded-xl font-bold flex items-center gap-2"><CheckCircle size={20} /> Salvar</button>
+                        <button type="submit" className="p-3 bg-blue-600 text-white rounded-xl font-bold flex items-center gap-2 shadow-sm hover:bg-blue-700 transition-colors"><CheckCircle size={20} /> Salvar</button>
                       </div>
                     </form>
                   </div>
@@ -536,12 +539,12 @@
                       </thead>
                       <tbody className="divide-y dark:divide-gray-700">
                         {products.map(p => (
-                          <tr key={p.id}>
+                          <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
                             <td className="p-4 font-medium">{p.name}</td>
                             <td className="p-4 font-bold text-green-600 dark:text-green-400">{formatCurrency(p.price)}</td>
                             <td className="p-4 flex justify-center gap-2">
-                              <button onClick={() => {setEditingProduct(p); setProdName(p.name); setProdPrice(p.price);}} className="p-2 text-blue-500 bg-blue-50 dark:bg-blue-900/30 rounded-lg"><Edit2 size={18}/></button>
-                              <button onClick={() => deleteProduct(p.id)} className="p-2 text-red-500 bg-red-50 dark:bg-red-900/30 rounded-lg"><Trash2 size={18}/></button>
+                              <button onClick={() => {setEditingProduct(p); setProdName(p.name); setProdPrice(p.price);}} className="p-2 text-blue-500 bg-blue-50 dark:bg-blue-900/30 rounded-lg hover:bg-blue-100 transition-colors"><Edit2 size={18}/></button>
+                              <button onClick={() => deleteProduct(p.id)} className="p-2 text-red-500 bg-red-50 dark:bg-red-900/30 rounded-lg hover:bg-red-100 transition-colors"><Trash2 size={18}/></button>
                             </td>
                           </tr>
                         ))}
@@ -589,7 +592,7 @@
                       <button onClick={requestPrint} className="bg-gray-800 hover:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-500 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 transition-colors">
                         <Printer size={18} /> Imprimir
                       </button>
-                      <button onClick={() => downloadPDF('report-pdf-content', 'Relatorio_Vendas')} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 transition-colors">
+                      <button onClick={() => downloadPDF('report-pdf-content', 'Relatorio_Vendas')} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 transition-colors shadow-sm">
                         <Download size={18} /> Baixar PDF
                       </button>
                     </div>
@@ -637,7 +640,6 @@
                       </table>
                     </div>
 
-                    {/* ÁREA DE ASSINATURAS */}
                     <div className="mt-20 pt-16 flex flex-col md:flex-row justify-around text-center text-sm font-semibold text-black gap-8">
                       <div>
                         <p>_____________________________________</p>
@@ -665,10 +667,10 @@
                       <p className="text-sm text-gray-500">Conferência da gaveta de dinheiro</p>
                     </div>
                     <div className="flex gap-3">
-                      <button onClick={requestPrint} className="bg-gray-800 hover:bg-gray-700 dark:bg-gray-600 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2">
+                      <button onClick={requestPrint} className="bg-gray-800 hover:bg-gray-700 dark:bg-gray-600 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 transition-colors">
                         <Printer size={18} /> Imprimir
                       </button>
-                      <button onClick={() => downloadPDF('closing-pdf-content', 'Fechamento_Gaveta')} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2">
+                      <button onClick={() => downloadPDF('closing-pdf-content', 'Fechamento_Gaveta')} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 transition-colors shadow-sm">
                         <Download size={18} /> Baixar PDF
                       </button>
                     </div>
@@ -692,7 +694,10 @@
                             <input 
                               type="number" min="0" step="1" 
                               value={cashDrawer[val] || ''} 
-                              onChange={(e) => setCashDrawer({...cashDrawer, [val]: Number(e.target.value)})}
+                              onChange={(e) => {
+                                const valNum = parseInt(e.target.value, 10);
+                                setCashDrawer({...cashDrawer, [val]: isNaN(valNum) ? 0 : valNum})
+                              }}
                               className="w-16 p-1 text-center bg-white border border-gray-300 rounded outline-none font-mono font-bold"
                               placeholder="0"
                             />
@@ -724,7 +729,6 @@
                       </div>
                     </div>
 
-                    {/* ÁREA DE ASSINATURAS */}
                     <div className="mt-20 pt-16 flex flex-col md:flex-row justify-around text-center text-sm font-semibold text-black gap-8">
                       <div>
                         <p>_____________________________________</p>
@@ -745,7 +749,7 @@
 
               {/* === CONFIGURAÇÕES === */}
               {activeTab === 'settings' && (
-                <div className="max-w-3xl mx-auto print:hidden space-y-6">
+                <div className="max-w-3xl mx-auto print:hidden space-y-6 pb-12">
                   <h2 className="text-2xl font-bold mb-6">Configurações do Sistema</h2>
                   
                   {/* Identidade Visual */}
@@ -795,7 +799,7 @@
                             setAlertDialog({isOpen: true, title: 'Sucesso', text: 'Evento salvo nos logs e caixa zerado com sucesso!'});
                           }
                         });
-                     }} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl flex items-center gap-2">
+                     }} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl flex items-center gap-2 shadow-sm transition-colors">
                        <Archive size={20}/> Encerrar Evento Atual e Arquivar
                      </button>
 
@@ -838,7 +842,7 @@
                             setActiveTab('pos');
                           }
                         });
-                    }} className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl">
+                    }} className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl shadow-sm transition-colors">
                       Excluir Todos os Dados e Resetar
                     </button>
                   </div>
@@ -855,4 +859,5 @@
     root.render(<App />);
   </script>
 </body>
-  </html>
+</html>
+
