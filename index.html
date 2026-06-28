@@ -1,610 +1,555 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/jpeg" href="https://media-gru1-1.cdn.whatsapp.net/v/t61.24694-24/489405406_650586094569182_6793834854762065392_n.jpg?ccb=11-4&oh=01_Q5Aa4wGY7p0SayjbDIPzs9zg4cRQqjwpuZWHtXDXiacRVfJnLw&oe=6A35BF57&_nc_sid=5e03e0&_nc_cat=102">
-  <title>PDV Profissional | Sistema de Vendas Grêmio</title>
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: { light: '#3b82f6', dark: '#2563eb' }
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EstudeHub | Plataforma All-in-One</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass: rgba(30, 41, 59, 0.7);
+            --border: rgba(255, 255, 255, 0.1);
         }
-      }
-    }
-  </script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+        }
 
-  <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@18.2.0",
-        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-        "lucide-react": "https://esm.sh/lucide-react@0.330.0?deps=react@18.2.0"
-      }
-    }
-  </script>
-  <style>
-    @media print {
-      .print\:hidden { display: none !important; }
-      .print\:block { display: block !important; }
-      body { background: white !important; color: black !important; }
-    }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-    .dark::-webkit-scrollbar-thumb { background: #334155; }
-  </style>
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            overflow-x: hidden;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* BARRA LATERAL */
+        nav {
+            width: 260px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i { color: var(--accent); }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 14px 20px;
+            text-align: left;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* CONTEÚDO PRINCIPAL */
+        main {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .view-section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 { font-size: 28px; margin-bottom: 20px; font-weight: 600; }
+
+        /* AREA DE NOTAS & PRINT A4 */
+        .editor-container {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .btn:hover { background: var(--accent); border-color: transparent; }
+        .btn-success { background: #10b981; }
+        .btn-success:hover { background: #059669; }
+
+        #note-editor {
+            width: 100%;
+            min-height: 400px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 25px;
+            color: var(--text-main);
+            font-size: 16px;
+            line-height: 1.6;
+            outline: none;
+        }
+
+        /* SEÇÃO DE SLIDES */
+        .slides-wrapper {
+            display: flex;
+            gap: 20px;
+        }
+
+        .slides-sidebar {
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .slide-thumb {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            aspect-ratio: 16/9;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--text-muted);
+        }
+
+        .slide-thumb.active { border-color: var(--accent); color: var(--text-main); }
+
+        .slide-editor-area {
+            flex: 1;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .slide-textarea {
+            width: 100%;
+            height: 250px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: white;
+            padding: 20px;
+            font-size: 18px;
+            resize: none;
+            outline: none;
+        }
+
+        /* APRESENTAÇÃO SLIDE FULLSCREEN */
+        #slide-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: black;
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+        }
+
+        #slide-container-view {
+            color: white;
+            font-size: 4rem;
+            text-align: center;
+            max-width: 80%;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .slide-close {
+            position: absolute; top: 30px; right: 30px;
+            font-size: 30px; color: white; cursor: pointer;
+        }
+
+        /* MAPA MENTAL */
+        #canvas-container {
+            width: 100%;
+            height: 550px;
+            background: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-color: rgba(15, 23, 42, 0.8);
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .mind-node {
+            position: absolute;
+            background: var(--accent);
+            padding: 12px 20px;
+            border-radius: 30px;
+            cursor: move;
+            user-select: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .mind-node i { cursor: pointer; opacity: 0.7; }
+        .mind-node i:hover { opacity: 1; color: #ef4444; }
+
+        /* MODAIS / POPUPS Customizados */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 12px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popUp {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            margin: 20px 0;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: white;
+            outline: none;
+        }
+
+        .modal-actions { display: flex; justify-content: center; gap: 15px; }
+
+        /* CONFIGURAÇÃO DE IMPRESSÃO FOLHA A4 */
+        @media print {
+            body * { visibility: hidden; }
+            #note-editor, #note-editor * { visibility: visible; }
+            #note-editor {
+                position: absolute;
+                left: 0; top: 0; width: 100%;
+                background: white !important;
+                color: black !important;
+                border: none !important;
+                padding: 0 !important;
+            }
+        }
+    </style>
 </head>
-<body class="antialiased transition-colors duration-300 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
-  <div id="root"></div>
+<body>
 
-  <script type="text/babel" data-type="module">
-    import React, { useState, useEffect, useRef, useMemo } from 'react';
-    import { createRoot } from 'react-dom/client';
-    import { 
-      ShoppingCart, Settings, Tag, PlusCircle, MinusCircle, CheckCircle, 
-      CreditCard, Banknote, X, Edit2, Trash2, RotateCcw, LayoutDashboard, 
-      History, Printer, Download, Calculator, Lock, Sun, Moon, AlertTriangle, Info,
-      GripHorizontal, Archive, Image as ImageIcon, Search
-    } from 'lucide-react';
-
-    // Utilitários de Segurança e Formatação
-    const safeEval = (str) => {
-      try {
-        return Function(`'use strict'; return (${str.replace(/[^-()\d/*+.]/g, '')})`)();
-      } catch { return "Erro"; }
-    };
-
-    const formatBRL = (val) => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-    function App() {
-      // --- ESTADOS E PERSISTÊNCIA ---
-      const [theme, setTheme] = useState(() => localStorage.getItem('pdv_theme')?.replace(/"/g, '') || 'light');
-      const [settings, setSettings] = useState(() => JSON.parse(localStorage.getItem('pdv_settings')) || { 
-        eventName: 'Evento Atual', 
-        gremioName: 'Grêmio Estudantil',
-        logoUrl: 'https://media-gru1-1.cdn.whatsapp.net/v/t61.24694-24/489405406_650586094569182_6793834854762065392_n.jpg?ccb=11-4&oh=01_Q5Aa4wGY7p0SayjbDIPzs9zg4cRQqjwpuZWHtXDXiacRVfJnLw&oe=6A35BF57&_nc_sid=5e03e0&_nc_cat=102'
-      });
-      
-      const [products, setProducts] = useState(() => JSON.parse(localStorage.getItem('pdv_products')) || []);
-      const [sales, setSales] = useState(() => JSON.parse(localStorage.getItem('pdv_sales')) || []);
-      const [eventLogs, setEventLogs] = useState(() => JSON.parse(localStorage.getItem('pdv_event_logs')) || []);
-      const [cashDrawer, setCashDrawer] = useState(() => JSON.parse(localStorage.getItem('pdv_cash_drawer')) || {
-        200: 0, 100: 0, 50: 0, 20: 0, 10: 0, 5: 0, 2: 0, 1: 0, 0.5: 0, 0.25: 0, 0.1: 0, 0.05: 0
-      });
-
-      const [activeTab, setActiveTab] = useState('pos');
-      const [cart, setCart] = useState([]);
-      const [cartDiscount, setCartDiscount] = useState(0);
-      const [searchTerm, setSearchTerm] = useState('');
-
-      // Modais e UI
-      const [isCalcOpen, setIsCalcOpen] = useState(false);
-      const [calcInput, setCalcInput] = useState('');
-      const [isPixModalOpen, setIsPixModalOpen] = useState(false);
-      const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', text: '', action: null, isDanger: false });
-      const [checkoutMsg, setCheckoutMsg] = useState('');
-      const [pixData, setPixData] = useState({ name: '', class: '' });
-
-      // Sincronização LocalStorage
-      useEffect(() => {
-        localStorage.setItem('pdv_theme', JSON.stringify(theme));
-        localStorage.setItem('pdv_settings', JSON.stringify(settings));
-        localStorage.setItem('pdv_products', JSON.stringify(products));
-        localStorage.setItem('pdv_sales', JSON.stringify(sales));
-        localStorage.setItem('pdv_event_logs', JSON.stringify(eventLogs));
-        localStorage.setItem('pdv_cash_drawer', JSON.stringify(cashDrawer));
-        document.documentElement.classList.toggle('dark', theme === 'dark');
-      }, [theme, settings, products, sales, eventLogs, cashDrawer]);
-
-      // --- LÓGICA DE NEGÓCIO ---
-      const filteredProducts = useMemo(() => 
-        products.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase())),
-      [products, searchTerm]);
-
-      const cartSubtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-      const cartTotal = Math.max(0, cartSubtotal - cartDiscount);
-
-      const addToCart = (product) => {
-        setCart(prev => {
-          const idx = prev.findIndex(i => i.product.id === product.id);
-          if (idx > -1) {
-            const newCart = [...prev];
-            newCart[idx].quantity += 1;
-            return newCart;
-          }
-          return [...prev, { product, quantity: 1 }];
-        });
-      };
-
-      const removeFromCart = (productId) => {
-        setCart(prev => prev.map(i => i.product.id === productId ? { ...i, quantity: i.quantity - 1 } : i).filter(i => i.quantity > 0));
-      };
-
-      const processCheckout = (method) => {
-        if (method === 'PIX' && (!pixData.name || !pixData.class)) return alert("Preencha os dados do aluno!");
-        
-        const sale = {
-          id: crypto.randomUUID(),
-          items: [...cart],
-          subtotal: cartSubtotal,
-          discount: cartDiscount,
-          total: cartTotal,
-          paymentMethod: method,
-          timestamp: new Date().toISOString(),
-          student: method === 'PIX' ? pixData : null
-        };
-
-        setSales([sale, ...sales]);
-        setCart([]);
-        setCartDiscount(0);
-        setPixData({ name: '', class: '' });
-        setIsPixModalOpen(false);
-        setCheckoutMsg(`Venda realizada: ${formatBRL(cartTotal)}`);
-        setTimeout(() => setCheckoutMsg(''), 3000);
-      };
-
-      // --- EXPORTAÇÃO E RELATÓRIOS ---
-      const reportData = useMemo(() => {
-        const initial = { total: 0, pix: 0, dinheiro: 0, items: {} };
-        return sales.reduce((acc, sale) => {
-          acc.total += sale.total;
-          acc[sale.paymentMethod.toLowerCase()] += sale.total;
-          sale.items.forEach(item => {
-            if (!acc.items[item.product.id]) acc.items[item.product.id] = { name: item.product.name, qty: 0, total: 0 };
-            acc.items[item.product.id].qty += item.quantity;
-            acc.items[item.product.id].total += (item.quantity * item.product.price);
-          });
-          return acc;
-        }, initial);
-      }, [sales]);
-
-      const downloadPDF = (id, title) => {
-        const element = document.getElementById(id);
-        const opt = { margin: 10, filename: `${title}.pdf`, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } };
-        html2pdf().set(opt).from(element).save();
-      };
-
-      // --- COMPONENTES DE INTERFACE ---
-      const SidebarItem = ({ id, icon: Icon, label }) => (
-        <button 
-          onClick={() => setActiveTab(id)} 
-          className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-semibold ${activeTab === id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
-        >
-          <Icon size={20} /> <span className="hidden md:block">{label}</span>
-        </button>
-      );
-
-      return (
-        <div className="flex h-screen w-full overflow-hidden">
-          {/* SIDEBAR */}
-          <aside className="w-20 md:w-64 border-r dark:border-slate-800 bg-white dark:bg-slate-900 p-4 flex flex-col gap-8 print:hidden transition-all">
-            <div className="flex items-center gap-3 px-2">
-              <img src={settings.logoUrl} className="w-10 h-10 rounded-full border-2 border-blue-500 p-0.5 object-cover" />
-              <div className="hidden md:block">
-                <h2 className="text-xs font-black uppercase text-blue-500 tracking-wider">Sistema PDV</h2>
-                <p className="text-sm font-bold truncate w-32">{settings.gremioName}</p>
-              </div>
-            </div>
-
-            <nav className="flex-1 space-y-1">
-              <SidebarItem id="pos" icon={ShoppingCart} label="Caixa PDV" />
-              <SidebarItem id="products" icon={Tag} label="Cardápio" />
-              <SidebarItem id="history" icon={History} label="Histórico" />
-              <SidebarItem id="report" icon={LayoutDashboard} label="Relatórios" />
-              <SidebarItem id="closing" icon={Lock} label="Fechamento" />
-              <SidebarItem id="settings" icon={Settings} label="Ajustes" />
-            </nav>
-
-            <div className="pt-4 border-t dark:border-slate-800 space-y-2">
-               <button onClick={() => setIsCalcOpen(!isCalcOpen)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors">
-                <Calculator size={20}/> <span className="hidden md:block font-medium">Calculadora</span>
-              </button>
-              <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all">
-                {theme === 'dark' ? <Sun size={20}/> : <Moon size={20}/>}
-                <span className="hidden md:block font-bold">Modo {theme === 'dark' ? 'Claro' : 'Escuro'}</span>
-              </button>
-            </div>
-          </aside>
-
-          {/* MAIN CONTENT */}
-          <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950 p-4 md:p-8">
-            
-            {/* TELA: PDV */}
-            {activeTab === 'pos' && (
-              <div className="flex flex-col lg:flex-row gap-8 h-full animate-in fade-in duration-500">
-                <div className="flex-1 space-y-6">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <h1 className="text-3xl font-black">Vendas</h1>
-                    <div className="relative w-full md:w-72">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                      <input 
-                        type="text" placeholder="Buscar produto..." 
-                        className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-2 ring-blue-500 outline-none transition-all"
-                        value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {filteredProducts.map(p => (
-                      <button 
-                        key={p.id} onClick={() => addToCart(p)}
-                        className="group bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200 dark:border-slate-800 hover:border-blue-500 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 transition-all flex flex-col items-center text-center gap-3 active:scale-95"
-                      >
-                        <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center font-bold text-xl group-hover:scale-110 transition-transform">
-                          {p.name.charAt(0)}
-                        </div>
-                        <span className="font-bold text-slate-700 dark:text-slate-200">{p.name}</span>
-                        <span className="px-3 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full text-sm font-black">
-                          {formatBRL(p.price)}
-                        </span>
-                      </button>
-                    ))}
-                    {products.length === 0 && (
-                      <div className="col-span-full py-20 text-center opacity-50">
-                        <Tag className="mx-auto mb-4" size={48} />
-                        <p>Nenhum produto cadastrado no cardápio.</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* CARRINHO LADO DIREITO */}
-                <div className="w-full lg:w-[400px] flex flex-col bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden shrink-0">
-                  <div className="p-6 border-b dark:border-slate-800">
-                    <h2 className="text-xl font-black flex items-center gap-3">
-                      <ShoppingCart size={24} className="text-blue-500" /> Carrinho
-                    </h2>
-                  </div>
-
-                  <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                    {cart.map(item => (
-                      <div key={item.product.id} className="flex items-center justify-between group">
-                        <div className="flex-1">
-                          <p className="font-bold text-sm">{item.product.name}</p>
-                          <p className="text-xs text-slate-400">{formatBRL(item.product.price)} / un</p>
-                        </div>
-                        <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800 p-1.5 rounded-xl border dark:border-slate-700">
-                          <button onClick={() => removeFromCart(item.product.id)} className="p-1 hover:text-red-500 transition-colors"><MinusCircle size={18}/></button>
-                          <span className="w-6 text-center font-black text-sm">{item.quantity}</span>
-                          <button onClick={() => addToCart(item.product)} className="p-1 hover:text-blue-500 transition-colors"><PlusCircle size={18}/></button>
-                        </div>
-                      </div>
-                    ))}
-                    {cart.length === 0 && (
-                      <div className="h-full flex flex-col items-center justify-center text-slate-400 gap-2 opacity-50">
-                        <ShoppingCart size={40} />
-                        <p className="font-medium text-sm">O carrinho está vazio</p>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="p-6 bg-slate-50/50 dark:bg-slate-800/30 border-t dark:border-slate-800 space-y-4">
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-slate-500 font-medium">Subtotal</span>
-                      <span className="font-bold">{formatBRL(cartSubtotal)}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-slate-500 font-medium">Desconto</span>
-                      <input 
-                        type="number" value={cartDiscount || ''} 
-                        onChange={e => setCartDiscount(Number(e.target.value))}
-                        className="w-20 text-right bg-transparent border-b border-dashed border-slate-300 dark:border-slate-600 outline-none font-bold text-red-500"
-                        placeholder="0,00"
-                      />
-                    </div>
-                    <div className="pt-4 border-t dark:border-slate-700 flex justify-between items-end">
-                      <span className="font-black text-lg">Total</span>
-                      <span className="text-3xl font-black text-blue-600 dark:text-blue-400 tracking-tighter">
-                        {formatBRL(cartTotal)}
-                      </span>
-                    </div>
-                    {checkoutMsg && (
-                      <div className="py-2 bg-emerald-500/10 text-emerald-600 text-xs font-bold text-center rounded-lg animate-bounce">
-                        {checkoutMsg}
-                      </div>
-                    )}
-                    <div className="grid grid-cols-2 gap-3">
-                      <button 
-                        onClick={() => processCheckout('DINHEIRO')}
-                        disabled={cart.length === 0}
-                        className="py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-2xl font-black flex flex-col items-center gap-1 hover:opacity-90 disabled:opacity-30 transition-all active:scale-95 shadow-xl"
-                      >
-                        <Banknote size={20} /> <span className="text-[10px] uppercase">Dinheiro</span>
-                      </button>
-                      <button 
-                        onClick={() => setIsPixModalOpen(true)}
-                        disabled={cart.length === 0}
-                        className="py-4 bg-teal-500 text-white rounded-2xl font-black flex flex-col items-center gap-1 hover:bg-teal-600 disabled:opacity-30 transition-all active:scale-95 shadow-xl shadow-teal-500/20"
-                      >
-                        <CreditCard size={20} /> <span className="text-[10px] uppercase">PIX</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* RELATÓRIO PDF (HIDDEN NO APP, VISIBLE NO PDF) */}
-            <div className="hidden">
-                <div id="report-view" className="p-10 bg-white text-black font-sans">
-                    <div className="text-center border-b-2 border-slate-200 pb-6 mb-8">
-                        <h1 className="text-4xl font-black uppercase text-slate-900">{settings.gremioName}</h1>
-                        <p className="text-xl font-bold text-slate-600">{settings.eventName}</p>
-                        <p className="text-sm text-slate-400 mt-2">Relatório emitido em: {new Date().toLocaleString('pt-BR')}</p>
-                    </div>
-                    
-                    <div className="grid grid-cols-3 gap-4 mb-10">
-                        <div className="p-4 bg-slate-100 rounded-lg">
-                            <p className="text-xs font-bold uppercase text-slate-500">Total Geral</p>
-                            <p className="text-2xl font-black">{formatBRL(reportData.total)}</p>
-                        </div>
-                        <div className="p-4 bg-slate-100 rounded-lg">
-                            <p className="text-xs font-bold uppercase text-slate-500">Total PIX</p>
-                            <p className="text-2xl font-black">{formatBRL(reportData.pix)}</p>
-                        </div>
-                        <div className="p-4 bg-slate-100 rounded-lg">
-                            <p className="text-xs font-bold uppercase text-slate-500">Total Dinheiro</p>
-                            <p className="text-2xl font-black">{formatBRL(reportData.dinheiro)}</p>
-                        </div>
-                    </div>
-
-                    <table className="w-full text-left mb-20">
-                        <thead className="bg-slate-900 text-white">
-                            <tr>
-                                <th className="p-3">Produto</th>
-                                <th className="p-3 text-center">Qtd</th>
-                                <th className="p-3 text-right">Faturamento</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-200">
-                            {Object.values(reportData.items).map((item, i) => (
-                                <tr key={i}>
-                                    <td className="p-3 font-bold">{item.name}</td>
-                                    <td className="p-3 text-center font-bold text-blue-600">{item.qty}</td>
-                                    <td className="p-3 text-right">{formatBRL(item.total)}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-
-                    <div className="flex justify-around mt-20 text-center text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                        <div className="border-t border-slate-300 pt-2 w-48">Tesouraria</div>
-                        <div className="border-t border-slate-300 pt-2 w-48">Coordenação</div>
-                        <div className="border-t border-slate-300 pt-2 w-48">Operador de Caixa</div>
-                    </div>
-                </div>
-            </div>
-
-            {/* ABA: CARDÁPIO (PRODUTOS) */}
-            {activeTab === 'products' && (
-               <div className="max-w-4xl mx-auto space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-                  <div className="flex justify-between items-center">
-                    <h1 className="text-3xl font-black">Gerenciar Cardápio</h1>
-                  </div>
-
-                  <div className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-xl">
-                    <form 
-                      className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end"
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        const formData = new FormData(e.target);
-                        const newProd = {
-                          id: Date.now().toString(),
-                          name: formData.get('name'),
-                          price: parseFloat(formData.get('price'))
-                        };
-                        setProducts([...products, newProd]);
-                        e.target.reset();
-                      }}
-                    >
-                      <div className="md:col-span-1">
-                        <label className="block text-xs font-black uppercase text-slate-500 mb-2">Nome do Produto</label>
-                        <input name="name" required className="w-full p-4 rounded-2xl bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 ring-blue-500" placeholder="Ex: Refrigerante Lata" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-black uppercase text-slate-500 mb-2">Preço de Venda (R$)</label>
-                        <input name="price" type="number" step="0.01" required className="w-full p-4 rounded-2xl bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 ring-blue-500" placeholder="0,00" />
-                      </div>
-                      <button type="submit" className="w-full p-4 bg-blue-600 text-white rounded-2xl font-black hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
-                        <PlusCircle size={20}/> Adicionar
-                      </button>
-                    </form>
-                  </div>
-
-                  <div className="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 overflow-hidden">
-                    <table className="w-full text-left">
-                      <thead>
-                        <tr className="bg-slate-50 dark:bg-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-500">
-                          <th className="p-6">Nome do Produto</th>
-                          <th className="p-6">Valor Unitário</th>
-                          <th className="p-6 text-center">Ações</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y dark:divide-slate-800">
-                        {products.map(p => (
-                          <tr key={p.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                            <td className="p-6 font-bold">{p.name}</td>
-                            <td className="p-6 font-black text-emerald-600">{formatBRL(p.price)}</td>
-                            <td className="p-6">
-                              <div className="flex justify-center gap-2">
-                                <button onClick={() => setProducts(products.filter(x => x.id !== p.id))} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><Trash2 size={18}/></button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-               </div>
-            )}
-
-            {/* ABA: RELATÓRIOS */}
-            {activeTab === 'report' && (
-              <div className="max-w-5xl mx-auto space-y-6">
-                <div className="flex justify-between items-center">
-                  <h1 className="text-3xl font-black text-slate-800 dark:text-white">Análise de Faturamento</h1>
-                  <div className="flex gap-2">
-                    <button onClick={() => window.print()} className="px-6 py-3 bg-slate-800 text-white rounded-2xl font-bold flex items-center gap-2"><Printer size={18}/> Imprimir</button>
-                    <button onClick={() => downloadPDF('report-view', 'Relatorio_Vendas')} className="px-6 py-3 bg-blue-600 text-white rounded-2xl font-bold flex items-center gap-2"><Download size={18}/> PDF</button>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                   <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800">
-                      <p className="text-xs font-black uppercase text-slate-400 mb-1">Total Acumulado</p>
-                      <p className="text-3xl font-black text-blue-600">{formatBRL(reportData.total)}</p>
-                   </div>
-                   <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800">
-                      <p className="text-xs font-black uppercase text-slate-400 mb-1">Total PIX</p>
-                      <p className="text-3xl font-black text-teal-500">{formatBRL(reportData.pix)}</p>
-                   </div>
-                   <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800">
-                      <p className="text-xs font-black uppercase text-slate-400 mb-1">Total Dinheiro</p>
-                      <p className="text-3xl font-black text-emerald-500">{formatBRL(reportData.dinheiro)}</p>
-                   </div>
-                   <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800">
-                      <p className="text-xs font-black uppercase text-slate-400 mb-1">Qtd. Vendas</p>
-                      <p className="text-3xl font-black text-slate-700 dark:text-slate-200">{sales.length}</p>
-                   </div>
-                </div>
-
-                <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8">
-                   <h3 className="text-lg font-black mb-6">Desempenho por Produto</h3>
-                   <div className="space-y-4">
-                      {Object.values(reportData.items).map((item, i) => (
-                        <div key={i} className="flex items-center gap-4">
-                          <div className="flex-1">
-                            <div className="flex justify-between mb-1">
-                              <span className="text-sm font-bold">{item.name}</span>
-                              <span className="text-sm font-black text-blue-500">{item.qty} un</span>
-                            </div>
-                            <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                              <div 
-                                className="bg-blue-500 h-full transition-all duration-1000" 
-                                style={{ width: `${(item.total / reportData.total) * 100}%` }}
-                              />
-                            </div>
-                          </div>
-                          <span className="text-sm font-black w-24 text-right">{formatBRL(item.total)}</span>
-                        </div>
-                      ))}
-                   </div>
-                </div>
-              </div>
-            )}
-
-            {/* ABA: HISTÓRICO DE VENDAS */}
-            {activeTab === 'history' && (
-              <div className="max-w-4xl mx-auto space-y-6">
-                <h1 className="text-3xl font-black">Histórico de Transações</h1>
-                <div className="space-y-3">
-                  {sales.map(s => (
-                    <div key={s.id} className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-blue-500/50 transition-all">
-                      <div className="flex gap-4 items-center">
-                        <div className={`p-3 rounded-2xl ${s.paymentMethod === 'PIX' ? 'bg-teal-50 text-teal-600' : 'bg-blue-50 text-blue-600'}`}>
-                          {s.paymentMethod === 'PIX' ? <CreditCard/> : <Banknote/>}
-                        </div>
-                        <div>
-                          <p className="font-black text-slate-800 dark:text-slate-100">{formatBRL(s.total)}</p>
-                          <p className="text-xs text-slate-500 font-bold uppercase">{new Date(s.timestamp).toLocaleString('pt-BR')} • {s.items.length} itens</p>
-                          {s.student && <p className="text-[10px] mt-1 text-blue-500 font-black">👤 {s.student.name} | {s.student.class}</p>}
-                        </div>
-                      </div>
-                      <button 
-                        onClick={() => setSales(sales.filter(x => x.id !== s.id))}
-                        className="text-red-500 hover:bg-red-50 p-2 rounded-xl text-xs font-black uppercase flex items-center gap-2"
-                      >
-                        <RotateCcw size={14}/> Estornar
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-          </main>
-
-          {/* CALCULADORA FLUTUANTE */}
-          {isCalcOpen && (
-            <div className="fixed bottom-10 right-10 w-72 bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl border border-slate-200 dark:border-slate-800 z-50 overflow-hidden animate-in zoom-in-95">
-               <div className="p-4 bg-slate-900 dark:bg-slate-800 flex justify-between items-center text-white">
-                  <div className="flex items-center gap-2 text-xs font-black uppercase tracking-tighter opacity-70">
-                    <Calculator size={14}/> Calculadora
-                  </div>
-                  <button onClick={() => setIsCalcOpen(false)}><X size={18}/></button>
-               </div>
-               <div className="p-4 space-y-4">
-                  <div className="h-16 bg-slate-100 dark:bg-slate-950 rounded-2xl flex items-center justify-end px-4 text-2xl font-black font-mono overflow-hidden">
-                    {calcInput || '0'}
-                  </div>
-                  <div className="grid grid-cols-4 gap-2">
-                    {['7','8','9','/','4','5','6','*','1','2','3','-','C','0','+','='].map(btn => (
-                      <button 
-                        key={btn}
-                        onClick={() => {
-                          if (btn === 'C') setCalcInput('');
-                          else if (btn === '=') setCalcInput(String(safeEval(calcInput)));
-                          else setCalcInput(prev => prev + btn);
-                        }}
-                        className={`p-4 rounded-xl font-bold text-sm transition-all active:scale-90 ${btn === '=' ? 'bg-blue-600 text-white col-span-1' : btn === 'C' ? 'bg-red-500 text-white' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200'}`}
-                      >
-                        {btn}
-                      </button>
-                    ))}
-                  </div>
-               </div>
-            </div>
-          )}
-
-          {/* MODAL PIX */}
-          {isPixModalOpen && (
-            <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-              <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in zoom-in-95">
-                <div className="p-8 space-y-6 text-center">
-                  <div className="w-20 h-20 bg-teal-50 dark:bg-teal-900/30 text-teal-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <CreditCard size={40} />
-                  </div>
-                  <h2 className="text-2xl font-black">Pagamento via PIX</h2>
-                  <p className="text-slate-500 font-medium">Solicite o comprovante ao aluno e preencha os dados abaixo.</p>
-                  
-                  <div className="space-y-3 text-left">
-                    <input 
-                      placeholder="Nome do Aluno" 
-                      className="w-full p-4 rounded-2xl bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 ring-teal-500"
-                      onChange={e => setPixData({...pixData, name: e.target.value})}
-                    />
-                    <input 
-                      placeholder="Série / Turma" 
-                      className="w-full p-4 rounded-2xl bg-slate-100 dark:bg-slate-800 border-none outline-none focus:ring-2 ring-teal-500"
-                      onChange={e => setPixData({...pixData, class: e.target.value})}
-                    />
-                  </div>
-
-                  <div className="pt-4 flex gap-3">
-                    <button onClick={() => setIsPixModalOpen(false)} className="flex-1 py-4 font-black uppercase text-xs text-slate-500">Cancelar</button>
-                    <button onClick={() => processCheckout('PIX')} className="flex-1 py-4 bg-teal-500 text-white rounded-2xl font-black uppercase text-xs shadow-xl shadow-teal-500/20">Confirmar Venda</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+    <nav>
+        <div class="logo">
+            <i class="fa-solid fa-graduation-cap"></i> EstudeHub
         </div>
-      );
-    }
+        <button class="nav-btn active" onclick="switchView('notes')">
+            <i class="fa-solid fa-pen-to-square"></i> Bloco de Notas
+        </button>
+        <button class="nav-btn" onclick="switchView('slides')">
+            <i class="fa-solid fa-layer-group"></i> Criar Slides
+        </button>
+        <button class="nav-btn" onclick="switchView('mindmap')">
+            <i class="fa-solid fa-diagram-project"></i> Mapa Mental
+        </button>
+    </nav>
 
-    const root = createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
+    <main>
+        
+        <section id="notes" class="view-section active">
+            <h2><i class="fa-solid fa-file-lines" style="color:var(--accent)"></i> Bloco de Notas Avançado</h2>
+            <div class="editor-container">
+                <div class="toolbar">
+                    <button class="btn" onclick="document.execCommand('bold')"><i class="fa-solid fa-bold"></i></button>
+                    <button class="btn" onclick="document.execCommand('italic')"><i class="fa-solid fa-italic"></i></button>
+                    <button class="btn" onclick="document.execCommand('insertUnorderedList')"><i class="fa-solid fa-list"></i></button>
+                    <button class="btn btn-success" onclick="window.print()"><i class="fa-solid fa-print"></i> Imprimir em A4</button>
+                    <button class="btn" onclick="showPopup('Nota salva com sucesso de forma segura!', true)"><i class="fa-solid fa-floppy-disk"></i> Salvar</button>
+                </div>
+                <div id="note-editor" contenteditable="true" placeholder="Comece a digitar suas anotações de estudo aqui..."></div>
+            </div>
+        </section>
+
+        <section id="slides" class="view-section">
+            <h2><i class="fa-solid fa-sliders" style="color:var(--accent)"></i> Apresentação de Slides</h2>
+            <div class="toolbar" style="margin-bottom: 20px;">
+                <button class="btn" onclick="addSlide()"><i class="fa-solid fa-plus"></i> Novo Slide</button>
+                <button class="btn btn-success" onclick="startPresentation()"><i class="fa-solid fa-play"></i> Apresentar</button>
+            </div>
+            <div class="slides-wrapper">
+                <div class="slides-sidebar" id="slides-list">
+                    </div>
+                <div class="slide-editor-area">
+                    <h3>Conteúdo do Slide</h3>
+                    <textarea class="slide-textarea" id="slide-text" oninput="updateSlideContent(this.value)" placeholder="Escreva o texto ou tópicos deste slide aqui..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <section id="mindmap" class="view-section">
+            <h2><i class="fa-solid fa-network-wired" style="color:var(--accent)"></i> Mapa Mental Interativo</h2>
+            <div class="toolbar">
+                <button class="btn" onclick="openNodeModal()"><i class="fa-solid fa-circle-plus"></i> Adicionar Balão</button>
+                <button class="btn" onclick="clearCanvas()"><i class="fa-solid fa-trash-can"></i> Limpar Tudo</button>
+            </div>
+            <div id="canvas-container">
+                </div>
+        </section>
+    </main>
+
+    <div id="slide-overlay">
+        <i class="fa-solid fa-xmark slide-close" onclick="closePresentation()"></i>
+        <div id="slide-container-view">Conteúdo do Slide</div>
+    </div>
+
+    <div id="custom-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-title">Mensagem</h3>
+            <p id="modal-msg" style="margin-top: 10px; color: var(--text-muted);"></p>
+            <input type="text" id="modal-input" style="display: none;" placeholder="Digite aqui...">
+            <div class="modal-actions" style="margin-top: 20px;">
+                <button class="btn btn-success" id="modal-confirm-btn" onclick="closeModal()">OK</button>
+                <button class="btn" id="modal-cancel-btn" style="display: none;" onclick="closeModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // GERENCIADOR DE VISÕES DO MENU
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(section => section.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(viewId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // SISTEMA DE POPUP / MODAL EXCLUSIVO (SEM ALERTS)
+        function showPopup(message, isAlertOnly = false, callback = null) {
+            const modal = document.getElementById('custom-modal');
+            document.getElementById('modal-title').innerText = "Sistema EstudeHub";
+            document.getElementById('modal-msg').innerText = message;
+            document.getElementById('modal-input').style.display = "none";
+            document.getElementById('modal-cancel-btn').style.display = "none";
+
+            document.getElementById('modal-confirm-btn').onclick = function() {
+                modal.style.display = "none";
+                if(callback) callback();
+            };
+            modal.style.display = "flex";
+        }
+
+        function promptPopup(message, callback) {
+            const modal = document.getElementById('custom-modal');
+            document.getElementById('modal-title').innerText = "Adicionar Novo Item";
+            document.getElementById('modal-msg').innerText = message;
+            
+            const input = document.getElementById('modal-input');
+            input.style.display = "block";
+            input.value = "";
+            
+            document.getElementById('modal-cancel-btn').style.display = "inline-flex";
+            
+            document.getElementById('modal-confirm-btn').onclick = function() {
+                if(input.value.trim() !== "") {
+                    modal.style.display = "none";
+                    callback(input.value);
+                }
+            };
+            modal.style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').style.display = "none";
+        }
+
+        // SISTEMA DE SLIDES
+        let slides = ["Slide 1: Introdução ao seu Tema"];
+        let currentSlideIndex = 0;
+
+        function renderSlides() {
+            const list = document.getElementById('slides-list');
+            list.innerHTML = "";
+            slides.forEach((slide, index) => {
+                const thumb = document.createElement('div');
+                thumb.className = `slide-thumb ${index === currentSlideIndex ? 'active' : ''}`;
+                thumb.innerText = `Slide ${index + 1}`;
+                thumb.onclick = () => selectSlide(index);
+                list.appendChild(thumb);
+            });
+            document.getElementById('slide-text').value = slides[currentSlideIndex] || "";
+        }
+
+        function addSlide() {
+            slides.push(`Slide ${slides.length + 1}: Novo Conteúdo`);
+            currentSlideIndex = slides.length - 1;
+            renderSlides();
+        }
+
+        function selectSlide(index) {
+            currentSlideIndex = index;
+            renderSlides();
+        }
+
+        function updateSlideContent(val) {
+            slides[currentSlideIndex] = val;
+        }
+
+        function startPresentation() {
+            if(slides.length === 0) return;
+            let currentPresentIndex = 0;
+            const overlay = document.getElementById('slide-overlay');
+            const viewer = document.getElementById('slide-container-view');
+            
+            overlay.style.display = "flex";
+            viewer.innerText = slides[currentPresentIndex];
+
+            // Mudar slide com setas ou clique
+            overlay.onclick = function() {
+                currentPresentIndex++;
+                if(currentPresentIndex < slides.length) {
+                    viewer.innerText = slides[currentPresentIndex];
+                } else {
+                    closePresentation();
+                }
+            };
+        }
+
+        function closePresentation() {
+            document.getElementById('slide-overlay').style.display = "none";
+        }
+
+        // SISTEMA DE MAPA MENTAL (ARRASTAR E SOLTAR)
+        const canvas = document.getElementById('canvas-container');
+
+        function openNodeModal() {
+            promptPopup("Qual é a ideia central ou conceito do balão?", function(text) {
+                createMindNode(text);
+            });
+        }
+
+        function createMindNode(text) {
+            const node = document.createElement('div');
+            node.className = 'mind-node';
+            node.style.left = '150px';
+            node.style.top = '150px';
+            node.innerHTML = `<span>${text}</span> <i class="fa-solid fa-circle-xmark" onclick="this.parentElement.remove()"></i>`;
+            
+            // Lógica de Arrastar (Drag and Drop)
+            let isDragging = false;
+            let offsetX, offsetY;
+
+            node.addEventListener('mousedown', (e) => {
+                if(e.target.tagName === 'I') return;
+                isDragging = true;
+                offsetX = e.clientX - node.getBoundingClientRect().left;
+                offsetY = e.clientY - node.getBoundingClientRect().top;
+                node.style.cursor = 'grabbing';
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const rect = canvas.getBoundingClientRect();
+                let x = e.clientX - rect.left - offsetX;
+                let y = e.clientY - rect.top - offsetY;
+
+                // Restringir limites dentro do canvas
+                x = Math.max(0, Math.min(x, rect.width - node.offsetWidth));
+                y = Math.max(0, Math.min(y, rect.height - node.offsetHeight));
+
+                node.style.left = `${x}px`;
+                node.style.top = `${y}px`;
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                node.style.cursor = 'move';
+            });
+
+            canvas.appendChild(node);
+        }
+
+        function clearCanvas() {
+            canvas.innerHTML = "";
+        }
+
+        // Inicialização Inicial
+        renderSlides();
+    </script>
 </body>
 </html>
