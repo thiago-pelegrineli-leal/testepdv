@@ -1,555 +1,1013 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EstudeHub | Plataforma All-in-One</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --accent: #6366f1;
-            --accent-hover: #4f46e5;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --glass: rgba(30, 41, 59, 0.7);
-            --border: rgba(255, 255, 255, 0.1);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="icon" type="image/jpeg" href="https://underlying-brown-selvw25e.edgeone.dev/Design%20sem%20nome.png">
+  
+  <title>Financeiro Grêmio Inteligente</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: all 0.3s ease;
-        }
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-main);
-            overflow-x: hidden;
-            display: flex;
-            height: 100vh;
-        }
+  <style>
+    /* Animações customizadas */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+    /* Scrollbar customizada */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    .dark ::-webkit-scrollbar-thumb { background: #475569; }
+  </style>
 
-        /* BARRA LATERAL */
-        nav {
-            width: 260px;
-            background: var(--bg-secondary);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            z-index: 10;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 40px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo i { color: var(--accent); }
-
-        .nav-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 14px 20px;
-            text-align: left;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .nav-btn:hover, .nav-btn.active {
-            background: var(--accent);
-            color: white;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-            transform: translateY(-2px);
-        }
-
-        /* CONTEÚDO PRINCIPAL */
-        main {
-            flex: 1;
-            padding: 40px;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .view-section {
-            display: none;
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        .view-section.active { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h2 { font-size: 28px; margin-bottom: 20px; font-weight: 600; }
-
-        /* AREA DE NOTAS & PRINT A4 */
-        .editor-container {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-        }
-
-        .toolbar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 10px 18px;
-            border-radius: 6px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-        }
-
-        .btn:hover { background: var(--accent); border-color: transparent; }
-        .btn-success { background: #10b981; }
-        .btn-success:hover { background: #059669; }
-
-        #note-editor {
-            width: 100%;
-            min-height: 400px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 25px;
-            color: var(--text-main);
-            font-size: 16px;
-            line-height: 1.6;
-            outline: none;
-        }
-
-        /* SEÇÃO DE SLIDES */
-        .slides-wrapper {
-            display: flex;
-            gap: 20px;
-        }
-
-        .slides-sidebar {
-            width: 200px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .slide-thumb {
-            background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            aspect-ratio: 16/9;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: var(--text-muted);
-        }
-
-        .slide-thumb.active { border-color: var(--accent); color: var(--text-main); }
-
-        .slide-editor-area {
-            flex: 1;
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .slide-textarea {
-            width: 100%;
-            height: 250px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: white;
-            padding: 20px;
-            font-size: 18px;
-            resize: none;
-            outline: none;
-        }
-
-        /* APRESENTAÇÃO SLIDE FULLSCREEN */
-        #slide-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: black;
-            z-index: 1000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 60px;
-        }
-
-        #slide-container-view {
-            color: white;
-            font-size: 4rem;
-            text-align: center;
-            max-width: 80%;
-            word-wrap: break-word;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .slide-close {
-            position: absolute; top: 30px; right: 30px;
-            font-size: 30px; color: white; cursor: pointer;
-        }
-
-        /* MAPA MENTAL */
-        #canvas-container {
-            width: 100%;
-            height: 550px;
-            background: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
-            background-size: 20px 20px;
-            background-color: rgba(15, 23, 42, 0.8);
-            border: 2px dashed var(--border);
-            border-radius: 12px;
-            position: relative;
-            overflow: hidden;
-            margin-top: 15px;
-        }
-
-        .mind-node {
-            position: absolute;
-            background: var(--accent);
-            padding: 12px 20px;
-            border-radius: 30px;
-            cursor: move;
-            user-select: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-        }
-
-        .mind-node i { cursor: pointer; opacity: 0.7; }
-        .mind-node i:hover { opacity: 1; color: #ef4444; }
-
-        /* MODAIS / POPUPS Customizados */
-        .modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px);
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            padding: 30px;
-            border-radius: 12px;
-            width: 400px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        @keyframes popUp {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .modal-content input {
-            width: 100%;
-            padding: 12px;
-            margin: 20px 0;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: white;
-            outline: none;
-        }
-
-        .modal-actions { display: flex; justify-content: center; gap: 15px; }
-
-        /* CONFIGURAÇÃO DE IMPRESSÃO FOLHA A4 */
-        @media print {
-            body * { visibility: hidden; }
-            #note-editor, #note-editor * { visibility: visible; }
-            #note-editor {
-                position: absolute;
-                left: 0; top: 0; width: 100%;
-                background: white !important;
-                color: black !important;
-                border: none !important;
-                padding: 0 !important;
-            }
-        }
-    </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "lucide-react": "https://esm.sh/lucide-react@0.330.0?deps=react@18.2.0"
+      }
+    }
+  </script>
 </head>
-<body>
+<body class="transition-colors duration-300 bg-gray-100 dark:bg-gray-950 text-gray-800 dark:text-gray-100 font-sans">
+  <div id="root"></div>
 
-    <nav>
-        <div class="logo">
-            <i class="fa-solid fa-graduation-cap"></i> EstudeHub
-        </div>
-        <button class="nav-btn active" onclick="switchView('notes')">
-            <i class="fa-solid fa-pen-to-square"></i> Bloco de Notas
-        </button>
-        <button class="nav-btn" onclick="switchView('slides')">
-            <i class="fa-solid fa-layer-group"></i> Criar Slides
-        </button>
-        <button class="nav-btn" onclick="switchView('mindmap')">
-            <i class="fa-solid fa-diagram-project"></i> Mapa Mental
-        </button>
-    </nav>
+  <script type="text/babel" data-type="module">
+    import React, { useState, useEffect, useRef } from 'react';
+    import { createRoot } from 'react-dom/client';
+    import { 
+      ShoppingCart, Settings, Tag, PlusCircle, MinusCircle, CheckCircle, 
+      CreditCard, Banknote, X, Edit2, Trash2, RotateCcw, LayoutDashboard, 
+      History, Printer, Download, Calculator, Lock, Sun, Moon, AlertTriangle, Info,
+      GripHorizontal, Archive, Image as ImageIcon, ArrowUpRight, Eye, Package
+    } from 'lucide-react';
 
-    <main>
+    function App() {
+      // --- GERENCIAMENTO DE ESTADO E LOCALSTORAGE ---
+      const loadData = (key, defaultValue) => {
+        const saved = localStorage.getItem(key);
+        return saved ? JSON.parse(saved) : defaultValue;
+      };
+
+      const [theme, setTheme] = useState(() => loadData('pdv_theme', 'light'));
+      
+      const defaultSettings = { 
+        eventName: 'Gestão Financeira', 
+        gremioName: 'Grêmio Geração Consciente',
+        logoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1jvlQ6U_vRu2P3HDiuX9V11-93jeq1u78JI4yT7w6tdOClxB2N-bglMI&s=10'
+      };
+      
+      const [settings, setSettings] = useState(() => {
+        const loaded = loadData('pdv_settings', defaultSettings);
+        return { ...defaultSettings, ...loaded };
+      });
+      
+      const [eventLogs, setEventLogs] = useState(() => loadData('pdv_event_logs', []));
+      const [products, setProducts] = useState(() => loadData('pdv_products', []));
+      const [sales, setSales] = useState(() => loadData('pdv_sales', []));
+      // NOVO ESTADO: Bloquinho de PIX (Despesas)
+      const [pixExpenses, setPixExpenses] = useState(() => loadData('pdv_pix_expenses', []));
+      
+      const [activeTab, setActiveTab] = useState('pos'); 
+      const [cart, setCart] = useState([]);
+      const [cartDiscount, setCartDiscount] = useState(0);
+
+      const defaultDrawer = {
+        200: 0, 100: 0, 50: 0, 20: 0, 10: 0, 5: 0, 2: 0, 1: 0, 0.5: 0, 0.25: 0, 0.1: 0, 0.05: 0
+      };
+      const [cashDrawer, setCashDrawer] = useState(() => loadData('pdv_cash_drawer', defaultDrawer));
+
+      // Modais Customizados
+      const [isCalcOpen, setIsCalcOpen] = useState(false);
+      const [calcInput, setCalcInput] = useState('');
+      const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', text: '', action: null, isDanger: false });
+      const [alertDialog, setAlertDialog] = useState({ isOpen: false, title: '', text: '' });
+      const [isPixModalOpen, setIsPixModalOpen] = useState(false);
+      const [viewLogModal, setViewLogModal] = useState(null); // Visualizar evento arquivado
+      
+      const [editingProduct, setEditingProduct] = useState(null);
+      const [prodName, setProdName] = useState('');
+      const [prodPrice, setProdPrice] = useState('');
+      const [prodStock, setProdStock] = useState('');
+      
+      // Form de Saídas PIX
+      const [expDesc, setExpDesc] = useState('');
+      const [expAmount, setExpAmount] = useState('');
+
+      const [checkoutMsg, setCheckoutMsg] = useState('');
+      const [pixStudentName, setPixStudentName] = useState('');
+      const [pixStudentClass, setPixStudentClass] = useState('');
+
+      // Persistência
+      useEffect(() => { localStorage.setItem('pdv_theme', JSON.stringify(theme)); }, [theme]);
+      useEffect(() => { localStorage.setItem('pdv_settings', JSON.stringify(settings)); }, [settings]);
+      useEffect(() => { localStorage.setItem('pdv_event_logs', JSON.stringify(eventLogs)); }, [eventLogs]);
+      useEffect(() => { localStorage.setItem('pdv_products', JSON.stringify(products)); }, [products]);
+      useEffect(() => { localStorage.setItem('pdv_sales', JSON.stringify(sales)); }, [sales]);
+      useEffect(() => { localStorage.setItem('pdv_cash_drawer', JSON.stringify(cashDrawer)); }, [cashDrawer]);
+      useEffect(() => { localStorage.setItem('pdv_pix_expenses', JSON.stringify(pixExpenses)); }, [pixExpenses]);
+
+      // Aplicação do Tema Dark/Light
+      useEffect(() => {
+        if (theme === 'dark') document.documentElement.classList.add('dark');
+        else document.documentElement.classList.remove('dark');
+      }, [theme]);
+
+      // Utilitários
+      const formatCurrency = (val) => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      const formatDate = (isoString) => new Date(isoString).toLocaleString('pt-BR');
+
+      // --- CAIXA E VENDAS ---
+      const addToCart = (product) => {
+        setCart(prev => {
+          const exists = prev.find(i => i.product.id === product.id);
+          // Verifica estoque
+          if (product.stock !== undefined && product.stock !== '') {
+            const currentQty = exists ? exists.quantity : 0;
+            if (currentQty >= product.stock) {
+              setAlertDialog({ isOpen: true, title: 'Estoque Esgotado', text: `Você só tem ${product.stock} unidades de ${product.name} em estoque.`});
+              return prev;
+            }
+          }
+          if (exists) return prev.map(i => i.product.id === product.id ? { ...i, quantity: i.quantity + 1 } : i);
+          return [...prev, { product, quantity: 1 }];
+        });
+      };
+
+      const removeFromCart = (productId) => {
+        setCart(prev => {
+          const exists = prev.find(i => i.product.id === productId);
+          if (exists.quantity === 1) return prev.filter(i => i.product.id !== productId);
+          return prev.map(i => i.product.id === productId ? { ...i, quantity: i.quantity - 1 } : i);
+        });
+      };
+
+      const cartSubtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      const cartTotal = Math.max(0, cartSubtotal - cartDiscount);
+
+      const handlePixClick = () => {
+        if (cart.length === 0) return;
+        setIsPixModalOpen(true);
+      };
+
+      const processCheckout = (paymentMethod) => {
+        if (cart.length === 0) return;
         
-        <section id="notes" class="view-section active">
-            <h2><i class="fa-solid fa-file-lines" style="color:var(--accent)"></i> Bloco de Notas Avançado</h2>
-            <div class="editor-container">
-                <div class="toolbar">
-                    <button class="btn" onclick="document.execCommand('bold')"><i class="fa-solid fa-bold"></i></button>
-                    <button class="btn" onclick="document.execCommand('italic')"><i class="fa-solid fa-italic"></i></button>
-                    <button class="btn" onclick="document.execCommand('insertUnorderedList')"><i class="fa-solid fa-list"></i></button>
-                    <button class="btn btn-success" onclick="window.print()"><i class="fa-solid fa-print"></i> Imprimir em A4</button>
-                    <button class="btn" onclick="showPopup('Nota salva com sucesso de forma segura!', true)"><i class="fa-solid fa-floppy-disk"></i> Salvar</button>
-                </div>
-                <div id="note-editor" contenteditable="true" placeholder="Comece a digitar suas anotações de estudo aqui..."></div>
-            </div>
-        </section>
+        if (paymentMethod === 'PIX' && (!pixStudentName.trim() || !pixStudentClass.trim())) {
+          setAlertDialog({ isOpen: true, title: 'Atenção', text: 'Por favor, preencha o Nome e a Série do aluno.'});
+          return;
+        }
 
-        <section id="slides" class="view-section">
-            <h2><i class="fa-solid fa-sliders" style="color:var(--accent)"></i> Apresentação de Slides</h2>
-            <div class="toolbar" style="margin-bottom: 20px;">
-                <button class="btn" onclick="addSlide()"><i class="fa-solid fa-plus"></i> Novo Slide</button>
-                <button class="btn btn-success" onclick="startPresentation()"><i class="fa-solid fa-play"></i> Apresentar</button>
-            </div>
-            <div class="slides-wrapper">
-                <div class="slides-sidebar" id="slides-list">
+        const newSale = {
+          id: Date.now().toString(),
+          items: [...cart], subtotal: cartSubtotal, discount: cartDiscount, total: cartTotal,
+          paymentMethod, timestamp: new Date().toISOString(),
+          studentInfo: paymentMethod === 'PIX' ? { name: pixStudentName, schoolClass: pixStudentClass } : null
+        };
+
+        // Atualizar estoque
+        const updatedProducts = products.map(p => {
+          const inCart = cart.find(c => c.product.id === p.id);
+          if (inCart && p.stock !== undefined && p.stock !== '') {
+            return { ...p, stock: p.stock - inCart.quantity };
+          }
+          return p;
+        });
+
+        setProducts(updatedProducts);
+        setSales([newSale, ...sales]); setCart([]); setCartDiscount(0);
+        setPixStudentName(''); setPixStudentClass(''); setIsPixModalOpen(false);
+
+        setCheckoutMsg(`Sucesso! ${formatCurrency(cartTotal)} via ${paymentMethod}`);
+        setTimeout(() => setCheckoutMsg(''), 3000);
+      };
+
+      const cancelSale = (saleId) => {
+        const saleToCancel = sales.find(s => s.id === saleId);
+        setConfirmDialog({
+          isOpen: true, title: 'Estornar Venda', text: 'Tem certeza que deseja estornar (cancelar) esta venda? O estoque será devolvido.', isDanger: true,
+          action: () => {
+            // Devolver estoque
+            let updatedProducts = [...products];
+            saleToCancel.items.forEach(item => {
+              updatedProducts = updatedProducts.map(p => {
+                if (p.id === item.product.id && p.stock !== undefined && p.stock !== '') {
+                  return { ...p, stock: p.stock + item.quantity };
+                }
+                return p;
+              });
+            });
+            setProducts(updatedProducts);
+            setSales(sales.filter(s => s.id !== saleId));
+          }
+        });
+      };
+
+      // --- PRODUTOS ---
+      const saveProduct = (e) => {
+        e.preventDefault();
+        if (!prodName || !prodPrice) return;
+        const priceNum = parseFloat(prodPrice.toString().replace(',', '.'));
+        const stockNum = prodStock !== '' ? parseInt(prodStock) : '';
+        
+        if (editingProduct) {
+          setProducts(products.map(p => p.id === editingProduct.id ? { ...p, name: prodName, price: priceNum, stock: stockNum } : p));
+          setEditingProduct(null);
+        } else {
+          setProducts([...products, { id: Date.now().toString(), name: prodName, price: priceNum, stock: stockNum }]);
+        }
+        setProdName(''); setProdPrice(''); setProdStock('');
+      };
+
+      const deleteProduct = (id) => {
+        setConfirmDialog({
+          isOpen: true, title: 'Excluir Produto', text: 'Deseja excluir este produto definitivamente do cardápio?', isDanger: true,
+          action: () => {
+            setProducts(products.filter(p => p.id !== id));
+            setCart(cart.filter(item => item.product.id !== id));
+          }
+        });
+      };
+
+      // --- DESPESAS (PIX) ---
+      const saveExpense = (e) => {
+        e.preventDefault();
+        if(!expDesc || !expAmount) return;
+        const amountNum = parseFloat(expAmount.toString().replace(',', '.'));
+        setPixExpenses([{
+          id: Date.now().toString(), description: expDesc, amount: amountNum, isSpent: false, date: new Date().toISOString()
+        }, ...pixExpenses]);
+        setExpDesc(''); setExpAmount('');
+      };
+
+      const toggleExpenseStatus = (id) => {
+        setPixExpenses(pixExpenses.map(exp => exp.id === id ? { ...exp, isSpent: !exp.isSpent } : exp));
+      };
+
+      const deleteExpense = (id) => {
+        setPixExpenses(pixExpenses.filter(e => e.id !== id));
+      };
+
+      // --- EXPORTAÇÃO E CÁLCULOS ---
+      const getReport = (salesData = sales) => {
+        return salesData.reduce((acc, sale) => {
+          acc.total += sale.total;
+          acc.discounts += sale.discount || 0;
+          if (sale.paymentMethod === 'PIX') acc.pix += sale.total;
+          if (sale.paymentMethod === 'DINHEIRO') acc.dinheiro += sale.total;
+
+          sale.items.forEach(item => {
+            if (!acc.items[item.product.id]) acc.items[item.product.id] = { name: item.product.name, quantity: 0, total: 0 };
+            acc.items[item.product.id].quantity += item.quantity;
+            acc.items[item.product.id].total += (item.quantity * item.product.price);
+          });
+          return acc;
+        }, { total: 0, pix: 0, dinheiro: 0, discounts: 0, items: {} });
+      };
+
+      // Funcionalidade de Impressão (Força tema claro)
+      const executeWithLightMode = (callback) => {
+        const wasDark = document.documentElement.classList.contains('dark');
+        if (wasDark) document.documentElement.classList.remove('dark');
+        
+        setTimeout(() => {
+          callback(() => {
+            if (wasDark) document.documentElement.classList.add('dark');
+          });
+        }, 150);
+      };
+
+      const requestPrint = () => {
+        executeWithLightMode((restoreTheme) => {
+          window.print();
+          setTimeout(restoreTheme, 1000); 
+        });
+      };
+
+      const downloadPDF = (elementId, filenamePrefix) => {
+        const element = document.getElementById(elementId);
+        executeWithLightMode((restoreTheme) => {
+          const opt = {
+            margin: 10,
+            filename: `${filenamePrefix}_${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          };
+          html2pdf().set(opt).from(element).save().then(restoreTheme);
+        });
+      };
+
+      const calculateDrawerTotal = () => {
+        return Object.entries(cashDrawer).reduce((total, [value, qty]) => total + (Number(value) * Number(qty || 0)), 0);
+      };
+
+      // --- CALCULADORA ---
+      const calcPos = useRef({ x: window.innerWidth > 768 ? window.innerWidth - 300 : 20, y: 20 });
+      const calcRef = useRef(null);
+
+      const handleCalcDragStart = (e) => {
+        const startX = e.clientX || e.touches[0].clientX;
+        const startY = e.clientY || e.touches[0].clientY;
+        const startPosX = calcPos.current.x;
+        const startPosY = calcPos.current.y;
+
+        const onMove = (moveEvent) => {
+          const currentX = moveEvent.clientX || (moveEvent.touches && moveEvent.touches[0].clientX);
+          const currentY = moveEvent.clientY || (moveEvent.touches && moveEvent.touches[0].clientY);
+          calcPos.current = {
+            x: startPosX + (currentX - startX),
+            y: startPosY + (currentY - startY)
+          };
+          if(calcRef.current) {
+            calcRef.current.style.transform = `translate(${calcPos.current.x}px, ${calcPos.current.y}px)`;
+          }
+        };
+
+        const onEnd = () => {
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onEnd);
+          document.removeEventListener('touchmove', onMove);
+          document.removeEventListener('touchend', onEnd);
+        };
+
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onEnd);
+        document.addEventListener('touchmove', onMove, { passive: false });
+        document.addEventListener('touchend', onEnd);
+      };
+
+      const handleCalcBtn = (btn) => {
+        if(btn === 'C') setCalcInput('');
+        else if(btn === '=') { 
+          try { 
+            let evalStr = calcInput.replace(/×/g, '*').replace(/÷/g, '/').replace(/,/g, '.');
+            let res = eval(evalStr);
+            setCalcInput(res.toString().replace(/\./g, ',')); 
+          } catch(e) { 
+            setCalcInput('Erro'); 
+          } 
+        } 
+        else { 
+          setCalcInput(prev => prev === 'Erro' ? btn : prev + btn); 
+        }
+      };
+
+      const NavItem = ({ id, icon: Icon, label }) => (
+        <button onClick={() => setActiveTab(id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${activeTab === id ? 'bg-blue-600 text-white shadow-lg scale-[1.02]' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-[1.02]'}`}>
+          <Icon size={20} /> <span className="hidden md:block">{label}</span>
+        </button>
+      );
+
+      const reportData = getReport();
+      const drawerTotal = calculateDrawerTotal();
+      const drawerDiff = drawerTotal - reportData.dinheiro;
+
+      return (
+        <div className="min-h-screen flex w-full">
+          
+          {/* ================= MODAIS ESCONDIDOS ================= */}
+          
+          {/* Modal Visualizar Log Arquivado */}
+          {viewLogModal && (
+            <div className="absolute inset-0 bg-black/60 z-[60] flex items-center justify-center p-4 backdrop-blur-sm print:hidden">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col animate-fade-in overflow-hidden">
+                <div className="flex justify-between items-center p-4 border-b dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                  <h3 className="font-bold text-lg flex items-center gap-2"><Archive size={20} /> Evento: {viewLogModal.eventName}</h3>
+                  <div className="flex gap-2">
+                    <button onClick={() => downloadPDF('archived-log-content', 'Log_Evento')} className="p-2 bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-200 transition-colors" title="Baixar PDF"><Download size={18}/></button>
+                    <button onClick={() => setViewLogModal(null)} className="p-2 text-gray-500 hover:text-red-500"><X size={20} /></button>
+                  </div>
+                </div>
+                
+                <div className="p-6 overflow-y-auto" id="archived-log-content">
+                  <div className="text-center mb-6 border-b pb-4 dark:border-gray-700">
+                    <h2 className="text-2xl font-black">{viewLogModal.eventName}</h2>
+                    <p className="text-gray-500">Encerrado em: {new Date(viewLogModal.date).toLocaleString('pt-BR')}</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="bg-gray-100 dark:bg-gray-900 p-4 rounded-xl border-l-4 border-l-blue-500">
+                      <p className="text-xs uppercase font-bold text-gray-500">Faturamento Bruto</p>
+                      <p className="text-2xl font-black text-gray-800 dark:text-gray-100">{formatCurrency(viewLogModal.totalSales)}</p>
                     </div>
-                <div class="slide-editor-area">
-                    <h3>Conteúdo do Slide</h3>
-                    <textarea class="slide-textarea" id="slide-text" oninput="updateSlideContent(this.value)" placeholder="Escreva o texto ou tópicos deste slide aqui..."></textarea>
+                    <div className="bg-gray-100 dark:bg-gray-900 p-4 rounded-xl border-l-4 border-l-green-500">
+                      <p className="text-xs uppercase font-bold text-gray-500">Total de Vendas</p>
+                      <p className="text-2xl font-black text-gray-800 dark:text-gray-100">{viewLogModal.salesCount} transações</p>
+                    </div>
+                  </div>
+
+                  <h4 className="font-bold mb-2">Lista de Vendas Realizadas</h4>
+                  <div className="space-y-2">
+                    {viewLogModal.salesData.map(s => (
+                      <div key={s.id} className="flex justify-between items-center text-sm p-2 bg-gray-50 dark:bg-gray-700/30 rounded border dark:border-gray-700">
+                        <span>{new Date(s.timestamp).toLocaleTimeString('pt-BR')} - {s.paymentMethod}</span>
+                        <span className="font-bold">{formatCurrency(s.total)}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
+              </div>
             </div>
-        </section>
+          )}
 
-        <section id="mindmap" class="view-section">
-            <h2><i class="fa-solid fa-network-wired" style="color:var(--accent)"></i> Mapa Mental Interativo</h2>
-            <div class="toolbar">
-                <button class="btn" onclick="openNodeModal()"><i class="fa-solid fa-circle-plus"></i> Adicionar Balão</button>
-                <button class="btn" onclick="clearCanvas()"><i class="fa-solid fa-trash-can"></i> Limpar Tudo</button>
-            </div>
-            <div id="canvas-container">
+          {/* Outros Modais (Alerta, Confirmação, Calc, PIX) mantidos e otimizados... */}
+          {/* ... (Alerta Simples) ... */}
+          {alertDialog.isOpen && (
+            <div className="absolute inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm print:hidden">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm p-6 animate-fade-in">
+                <div className="flex items-center gap-3 mb-4 text-blue-600 dark:text-blue-400">
+                  <Info size={28}/> <h3 className="text-xl font-bold">{alertDialog.title}</h3>
                 </div>
-        </section>
-    </main>
-
-    <div id="slide-overlay">
-        <i class="fa-solid fa-xmark slide-close" onclick="closePresentation()"></i>
-        <div id="slide-container-view">Conteúdo do Slide</div>
-    </div>
-
-    <div id="custom-modal" class="modal">
-        <div class="modal-content">
-            <h3 id="modal-title">Mensagem</h3>
-            <p id="modal-msg" style="margin-top: 10px; color: var(--text-muted);"></p>
-            <input type="text" id="modal-input" style="display: none;" placeholder="Digite aqui...">
-            <div class="modal-actions" style="margin-top: 20px;">
-                <button class="btn btn-success" id="modal-confirm-btn" onclick="closeModal()">OK</button>
-                <button class="btn" id="modal-cancel-btn" style="display: none;" onclick="closeModal()">Cancelar</button>
+                <p className="text-gray-700 dark:text-gray-300 mb-6">{alertDialog.text}</p>
+                <button onClick={() => setAlertDialog({isOpen: false})} className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-transform hover:scale-105">Entendi</button>
+              </div>
             </div>
+          )}
+
+          {/* ... (Confirmação) ... */}
+          {confirmDialog.isOpen && (
+            <div className="absolute inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm print:hidden">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm p-6 animate-fade-in">
+                <div className={`flex items-center gap-3 mb-4 ${confirmDialog.isDanger ? 'text-red-500' : 'text-blue-600 dark:text-blue-400'}`}>
+                  {confirmDialog.isDanger ? <AlertTriangle size={28}/> : <Info size={28}/>} 
+                  <h3 className="text-xl font-bold">{confirmDialog.title}</h3>
+                </div>
+                <p className="text-gray-700 dark:text-gray-300 mb-6">{confirmDialog.text}</p>
+                <div className="flex gap-3">
+                  <button onClick={() => setConfirmDialog({...confirmDialog, isOpen: false})} className="flex-1 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-xl font-bold hover:bg-gray-300 transition-colors">Cancelar</button>
+                  <button onClick={() => { confirmDialog.action(); setConfirmDialog({...confirmDialog, isOpen: false}); }} className={`flex-1 py-3 text-white rounded-xl font-bold transition-transform hover:scale-105 ${confirmDialog.isDanger ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'}`}>Confirmar</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Calculadora Flutuante */}
+          {isCalcOpen && (
+            <div ref={calcRef} style={{ transform: `translate(${calcPos.current.x}px, ${calcPos.current.y}px)` }} className="fixed top-0 left-0 z-50 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 w-64 print:hidden animate-fade-in overflow-hidden">
+              <div className="flex justify-between items-center p-3 bg-gray-100 dark:bg-gray-900 cursor-move border-b border-gray-200 dark:border-gray-700" onMouseDown={handleCalcDragStart} onTouchStart={handleCalcDragStart}>
+                <div className="flex items-center gap-2 text-gray-500"><GripHorizontal size={16}/><span className="font-bold text-sm uppercase">Calculadora</span></div>
+                <button onClick={() => setIsCalcOpen(false)} className="text-gray-500 hover:text-red-500"><X size={18}/></button>
+              </div>
+              <div className="p-4">
+                <div className="bg-gray-100 dark:bg-gray-900 p-3 rounded-xl text-right text-2xl font-mono mb-3 overflow-hidden border dark:border-gray-700 h-14 flex items-center justify-end">{calcInput || '0'}</div>
+                <div className="grid grid-cols-4 gap-2">
+                  {['7','8','9','÷','4','5','6','×','1','2','3','-','C','0',',','+'].map(btn => (
+                    <button key={btn} onClick={() => handleCalcBtn(btn)} className={`p-3 rounded-lg font-bold text-lg hover:-translate-y-1 transition-all ${btn === 'C' ? 'bg-red-500 text-white shadow-md shadow-red-500/20' : ['÷','×','-','+'].includes(btn) ? 'bg-gray-200 dark:bg-gray-700' : 'bg-gray-50 dark:bg-gray-800 border dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 shadow-sm'}`}>{btn}</button>
+                  ))}
+                  <button onClick={() => handleCalcBtn('=')} className="col-span-4 p-3 bg-blue-600 text-white rounded-lg font-bold text-lg hover:bg-blue-700 transition-transform hover:-translate-y-1 shadow-md shadow-blue-500/30">=</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal PIX */}
+          {isPixModalOpen && (
+            <div className="absolute inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm print:hidden">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-fade-in">
+                <div className="flex justify-between items-center p-4 border-b dark:border-gray-700 bg-teal-50 dark:bg-teal-900/30">
+                  <h3 className="font-bold text-teal-800 dark:text-teal-400 flex items-center gap-2"><CreditCard size={20} /> Dados do PIX</h3>
+                  <button onClick={() => setIsPixModalOpen(false)} className="text-gray-500 hover:text-gray-700 dark:text-gray-400"><X size={20} /></button>
+                </div>
+                <div className="p-6 space-y-4">
+                  <div className="text-center mb-6">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Cobrar no PIX:</p>
+                    <p className="text-3xl font-black text-teal-600 dark:text-teal-400">{formatCurrency(cartTotal)}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">Nome do Aluno</label>
+                    <input type="text" value={pixStudentName} onChange={e => setPixStudentName(e.target.value)} placeholder="Ex: João da Silva" className="w-full p-3 bg-gray-50 dark:bg-gray-900 border dark:border-gray-600 rounded-xl outline-none focus:border-teal-500 transition-colors" autoFocus />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">Série / Turma</label>
+                    <input type="text" value={pixStudentClass} onChange={e => setPixStudentClass(e.target.value)} placeholder="Ex: 3º Ano B" className="w-full p-3 bg-gray-50 dark:bg-gray-900 border dark:border-gray-600 rounded-xl outline-none focus:border-teal-500 transition-colors" />
+                  </div>
+                </div>
+                <div className="p-4 flex gap-3 bg-gray-50 dark:bg-gray-800/80">
+                  <button onClick={() => setIsPixModalOpen(false)} className="flex-1 py-3 bg-gray-200 dark:bg-gray-700 rounded-xl font-bold hover:bg-gray-300 transition-colors">Cancelar</button>
+                  <button onClick={() => processCheckout('PIX')} className="flex-1 py-3 bg-teal-500 text-white rounded-xl font-bold hover:bg-teal-600 transition-transform hover:scale-105 shadow-lg shadow-teal-500/30">Confirmar</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ================= BARRA LATERAL ================= */}
+          <aside className="w-20 md:w-64 border-r dark:border-gray-800 flex flex-col p-4 shadow-sm print:hidden transition-all duration-300 z-10 shrink-0 h-screen overflow-y-auto bg-white dark:bg-gray-900">
+            <div className="flex items-center gap-3 px-2 mb-8 mt-2 text-blue-600 dark:text-blue-500">
+              <img src={settings.logoUrl} alt="Logo" className="w-10 h-10 rounded-full object-cover border-2 border-current shrink-0 bg-white shadow-md" />
+              <div className="hidden md:block overflow-hidden">
+                <h1 className="text-sm font-bold tracking-tight text-ellipsis whitespace-nowrap text-gray-800 dark:text-gray-200">
+                  {settings.gremioName}
+                </h1>
+                <p className="text-xs text-blue-600 truncate">{settings.eventName}</p>
+              </div>
+            </div>
+
+            <nav className="flex-1 space-y-2">
+              <NavItem id="pos" icon={ShoppingCart} label="Caixa (PDV)" />
+              <NavItem id="products" icon={Tag} label="Cardápio / Estoque" />
+              <NavItem id="expenses" icon={ArrowUpRight} label="Saídas (Gasto PIX)" />
+              <NavItem id="history" icon={History} label="Histórico Atual" />
+              <NavItem id="report" icon={LayoutDashboard} label="Relatório de Vendas" />
+              <NavItem id="closing" icon={Lock} label="Fechamento (Gaveta)" />
+            </nav>
+
+            <div className="mt-auto space-y-2 pt-4 border-t border-gray-200 dark:border-gray-800">
+              <button onClick={() => setIsCalcOpen(!isCalcOpen)} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all hover:scale-105">
+                <Calculator size={20}/> <span className="hidden md:block font-medium">Calculadora</span>
+              </button>
+              <NavItem id="settings" icon={Settings} label="Configurações" />
+              <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                {theme === 'dark' ? <Sun size={20} className="text-yellow-500"/> : <Moon size={20} className="text-blue-500"/>}
+                <span className="hidden md:block font-medium capitalize">Modo {theme === 'dark' ? 'Claro' : 'Escuro'}</span>
+              </button>
+            </div>
+          </aside>
+
+          {/* ================= ÁREA DE CONTEÚDO PRINCIPAL ================= */}
+          <main className="flex-1 flex flex-col h-screen overflow-hidden print:h-auto print:overflow-visible relative bg-gray-50 dark:bg-gray-950">
+            <div className="flex-1 overflow-y-auto p-4 md:p-6 print:p-0">
+              
+              {/* === CAIXA (PDV) === */}
+              {activeTab === 'pos' && (
+                <div className="flex flex-col lg:flex-row gap-6 h-full print:hidden animate-fade-in">
+                  <div className="flex-1 flex flex-col">
+                    <div className="flex justify-between items-center mb-4">
+                      <h2 className="text-2xl font-bold tracking-tight">Frente de Caixa</h2>
+                      <span className="text-sm text-gray-500 bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-sm">{products.length} produtos disponíveis</span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto pb-4 pr-2">
+                      {products.map(p => {
+                        const isOutOfStock = p.stock !== undefined && p.stock !== '' && p.stock <= 0;
+                        return (
+                        <button key={p.id} onClick={() => addToCart(p)} disabled={isOutOfStock} className={`bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-sm transition-all duration-300 group ${isOutOfStock ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:-translate-y-1 hover:shadow-lg hover:border-blue-400 active:scale-95'}`}>
+                          <span className="font-semibold mb-2 group-hover:text-blue-500 transition-colors">{p.name}</span>
+                          <span className="text-blue-700 dark:text-blue-300 font-bold bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-lg mb-2">{formatCurrency(p.price)}</span>
+                          {p.stock !== undefined && p.stock !== '' && (
+                            <span className={`text-xs px-2 py-1 rounded flex items-center gap-1 ${isOutOfStock ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'}`}><Package size={12}/> {isOutOfStock ? 'Esgotado' : `${p.stock} unid.`}</span>
+                          )}
+                        </button>
+                      )})}
+                    </div>
+                  </div>
+
+                  <div className="w-full lg:w-96 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl shadow-lg flex flex-col h-[600px] lg:h-full shrink-0 transition-all">
+                    <div className="p-4 border-b dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 rounded-t-2xl">
+                      <h3 className="text-lg font-bold flex justify-between items-center">
+                        Comanda Atual
+                        <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded-full shadow-inner">{cart.reduce((sum, i) => sum + i.quantity, 0)} itens</span>
+                      </h3>
+                    </div>
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                      {cart.map(item => (
+                        <div key={item.product.id} className="flex justify-between items-center bg-white dark:bg-gray-700/30 p-3 rounded-xl border dark:border-gray-600 shadow-sm animate-fade-in">
+                          <div className="flex-1 pr-2">
+                            <p className="font-semibold text-sm">{item.product.name}</p>
+                            <p className="text-xs text-gray-500">{formatCurrency(item.product.price)}</p>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center bg-gray-50 dark:bg-gray-800 rounded-lg border dark:border-gray-600 shadow-sm overflow-hidden">
+                              <button onClick={() => removeFromCart(item.product.id)} className="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"><MinusCircle size={16}/></button>
+                              <span className="w-6 text-center font-bold text-sm">{item.quantity}</span>
+                              <button onClick={() => addToCart(item.product)} className="p-2 text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"><PlusCircle size={16}/></button>
+                            </div>
+                            <div className="font-bold text-sm w-16 text-right text-blue-600 dark:text-blue-400">{formatCurrency(item.product.price * item.quantity)}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="p-4 bg-gray-50 dark:bg-gray-800/80 border-t dark:border-gray-700 rounded-b-2xl shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-sm font-medium">Desconto (R$):</span>
+                        <input type="number" min="0" step="0.5" value={cartDiscount || ''} onChange={e => setCartDiscount(Number(e.target.value))} className="w-24 text-right p-2 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm" placeholder="0.00" />
+                      </div>
+                      <div className="flex justify-between items-end mb-4">
+                        <span className="font-medium">Total a Pagar:</span>
+                        <div className="text-right">
+                          {cartDiscount > 0 && <span className="text-sm text-gray-400 line-through block">{formatCurrency(cartSubtotal)}</span>}
+                          <span className="text-3xl font-black text-blue-600 dark:text-blue-400 drop-shadow-sm">{formatCurrency(cartTotal)}</span>
+                        </div>
+                      </div>
+                      {checkoutMsg && <div className="mb-4 bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 p-3 rounded-xl text-sm font-medium flex justify-center gap-2 animate-pulse shadow-sm"><CheckCircle size={18} /> {checkoutMsg}</div>}
+                      <div className="grid grid-cols-2 gap-3">
+                        <button onClick={() => processCheckout('DINHEIRO')} disabled={cart.length===0} className="bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-bold flex flex-col items-center justify-center gap-1 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-500/30 active:scale-95 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none"><Banknote size={20} /> <span className="text-xs">Dinheiro</span></button>
+                        <button onClick={handlePixClick} disabled={cart.length===0} className="bg-teal-500 hover:bg-teal-600 text-white py-3 rounded-xl font-bold flex flex-col items-center justify-center gap-1 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-teal-500/30 active:scale-95 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none"><CreditCard size={20} /> <span className="text-xs">PIX</span></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* === DESPESAS E SAÍDAS PIX (NOVA ABA) === */}
+              {activeTab === 'expenses' && (
+                <div className="max-w-4xl mx-auto print:hidden animate-fade-in">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="p-3 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-xl"><ArrowUpRight size={24}/></div>
+                    <div>
+                      <h2 className="text-2xl font-bold">Bloquinho de Saídas PIX</h2>
+                      <p className="text-gray-500 text-sm">Registre gastos, compras ou repasses feitos pelo caixa.</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border dark:border-gray-700 overflow-hidden mb-8">
+                    <form onSubmit={saveExpense} className="p-5 flex flex-col md:flex-row gap-4 items-end bg-gray-50 dark:bg-gray-900/50">
+                      <div className="flex-1 w-full">
+                        <label className="block text-sm font-semibold mb-1">Descrição do Gasto (Para quem / O que)</label>
+                        <input type="text" value={expDesc} onChange={e => setExpDesc(e.target.value)} required placeholder="Ex: Compra de gelo, Repasse fornecedor..." className="w-full p-3 bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl outline-none focus:border-red-400 transition-colors shadow-sm" />
+                      </div>
+                      <div className="w-full md:w-48">
+                        <label className="block text-sm font-semibold mb-1">Valor (R$)</label>
+                        <input type="number" step="0.01" min="0" value={expAmount} onChange={e => setExpAmount(e.target.value)} required placeholder="0,00" className="w-full p-3 bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl outline-none focus:border-red-400 transition-colors shadow-sm" />
+                      </div>
+                      <button type="submit" className="p-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold flex items-center gap-2 transition-transform hover:-translate-y-1 shadow-md hover:shadow-red-500/30 w-full md:w-auto justify-center"><CheckCircle size={20} /> Registrar</button>
+                    </form>
+                  </div>
+
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border dark:border-gray-700 overflow-hidden">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-gray-50 dark:bg-gray-900/50 border-b dark:border-gray-700 text-sm text-gray-500">
+                          <th className="p-4">Descrição e Data</th><th className="p-4 w-32">Valor</th><th className="p-4 w-32 text-center">Status</th><th className="p-4 w-16 text-center">Ação</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y dark:divide-gray-700">
+                        {pixExpenses.length === 0 && <tr><td colSpan="4" className="p-8 text-center text-gray-500">Nenhuma saída registrada.</td></tr>}
+                        {pixExpenses.map(exp => (
+                          <tr key={exp.id} className="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                            <td className="p-4">
+                              <p className={`font-medium ${exp.isSpent ? 'text-gray-400 line-through' : ''}`}>{exp.description}</p>
+                              <p className="text-xs text-gray-400">{formatDate(exp.date)}</p>
+                            </td>
+                            <td className={`p-4 font-bold ${exp.isSpent ? 'text-gray-400' : 'text-red-500 dark:text-red-400'}`}>- {formatCurrency(exp.amount)}</td>
+                            <td className="p-4 text-center">
+                              <button onClick={() => toggleExpenseStatus(exp.id)} className={`px-3 py-1 rounded-full text-xs font-bold border transition-all ${exp.isSpent ? 'bg-gray-100 dark:bg-gray-700 text-gray-500 border-gray-300 dark:border-gray-600' : 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 border-amber-300 hover:scale-105 shadow-sm'}`}>
+                                {exp.isSpent ? '✅ Utilizado' : '⏳ Pendente'}
+                              </button>
+                            </td>
+                            <td className="p-4 text-center">
+                              <button onClick={() => deleteExpense(exp.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"><Trash2 size={18}/></button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    <div className="bg-gray-50 dark:bg-gray-900/80 p-4 border-t dark:border-gray-700 flex justify-between items-center">
+                      <span className="font-bold text-gray-600 dark:text-gray-400">Total de Saídas/Gastos:</span>
+                      <span className="text-xl font-black text-red-600 dark:text-red-400">{formatCurrency(pixExpenses.reduce((sum, exp) => sum + exp.amount, 0))}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* === CARDÁPIO E ESTOQUE === */}
+              {activeTab === 'products' && (
+                <div className="max-w-4xl mx-auto print:hidden animate-fade-in">
+                  <h2 className="text-2xl font-bold mb-6">Gerenciar Cardápio e Estoque</h2>
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border dark:border-gray-700 overflow-hidden mb-8">
+                    <form onSubmit={saveProduct} className="p-5 flex flex-col md:flex-row gap-4 items-end bg-blue-50/50 dark:bg-blue-900/10">
+                      <div className="flex-1 w-full">
+                        <label className="block text-sm font-semibold mb-1">Nome do Produto</label>
+                        <input type="text" value={prodName} onChange={e => setProdName(e.target.value)} required className="w-full p-3 bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl outline-none focus:border-blue-400 transition-colors shadow-sm" />
+                      </div>
+                      <div className="w-full md:w-32">
+                        <label className="block text-sm font-semibold mb-1">Preço (R$)</label>
+                        <input type="number" step="0.01" min="0" value={prodPrice} onChange={e => setProdPrice(e.target.value)} required className="w-full p-3 bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl outline-none focus:border-blue-400 transition-colors shadow-sm" />
+                      </div>
+                      <div className="w-full md:w-32">
+                        <label className="block text-sm font-semibold mb-1">Estoque</label>
+                        <input type="number" min="0" value={prodStock} onChange={e => setProdStock(e.target.value)} placeholder="Infinito" className="w-full p-3 bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl outline-none focus:border-blue-400 transition-colors shadow-sm" />
+                      </div>
+                      <div className="flex gap-2 w-full md:w-auto">
+                        {editingProduct && <button type="button" onClick={() => {setEditingProduct(null); setProdName(''); setProdPrice(''); setProdStock('');}} className="p-3 bg-gray-200 dark:bg-gray-700 rounded-xl font-bold hover:bg-gray-300 transition-colors w-full md:w-auto">Cancelar</button>}
+                        <button type="submit" className="p-3 bg-blue-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-transform hover:-translate-y-1 shadow-md hover:shadow-blue-500/30 w-full md:w-auto"><CheckCircle size={20} /> Salvar</button>
+                      </div>
+                    </form>
+                  </div>
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border dark:border-gray-700 overflow-hidden">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-gray-50 dark:bg-gray-900/50 border-b dark:border-gray-700 text-sm text-gray-500">
+                          <th className="p-4">Produto</th><th className="p-4 w-32">Estoque</th><th className="p-4 w-32">Preço</th><th className="p-4 w-24 text-center">Ações</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y dark:divide-gray-700">
+                        {products.map(p => (
+                          <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
+                            <td className="p-4 font-medium">{p.name}</td>
+                            <td className="p-4">
+                               {p.stock !== undefined && p.stock !== '' ? (
+                                 <span className={`px-2 py-1 rounded text-xs font-bold ${p.stock > 5 ? 'bg-blue-100 text-blue-700' : p.stock > 0 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>{p.stock} unid.</span>
+                               ) : <span className="text-gray-400 text-xs">Ilimitado</span>}
+                            </td>
+                            <td className="p-4 font-bold text-green-600 dark:text-green-400">{formatCurrency(p.price)}</td>
+                            <td className="p-4 flex justify-center gap-2">
+                              <button onClick={() => {setEditingProduct(p); setProdName(p.name); setProdPrice(p.price); setProdStock(p.stock !== undefined ? p.stock : '');}} className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"><Edit2 size={18}/></button>
+                              <button onClick={() => deleteProduct(p.id)} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"><Trash2 size={18}/></button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* === HISTÓRICO DE VENDAS === */}
+              {activeTab === 'history' && (
+                <div className="max-w-4xl mx-auto print:hidden animate-fade-in">
+                  <h2 className="text-2xl font-bold mb-6">Histórico de Transações do Evento</h2>
+                  <div className="space-y-4">
+                    {sales.length === 0 && <p className="text-gray-500 text-center py-10 bg-white dark:bg-gray-800 rounded-2xl border dark:border-gray-700 border-dashed">Nenhuma venda registrada neste evento ainda.</p>}
+                    {sales.map(sale => (
+                      <div key={sale.id} className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-2xl p-5 flex flex-col md:flex-row justify-between items-start md:items-center shadow-sm hover:shadow-md transition-shadow">
+                        <div>
+                          <div className="flex flex-wrap gap-2 mb-2 items-center">
+                            <span className={`px-2 py-1 rounded text-xs font-bold shadow-sm ${sale.paymentMethod === 'PIX' ? 'bg-teal-100 dark:bg-teal-900/50 text-teal-800 dark:text-teal-300' : 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300'}`}>{sale.paymentMethod}</span>
+                            <span className="text-sm text-gray-500 font-medium">{formatDate(sale.timestamp)}</span>
+                            {sale.studentInfo && <span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-md border dark:border-gray-600">👤 {sale.studentInfo.name} ({sale.studentInfo.schoolClass})</span>}
+                          </div>
+                          <p className="text-sm text-gray-700 dark:text-gray-300">{sale.items.map(i => `${i.quantity}x ${i.product.name}`).join(' • ')}</p>
+                        </div>
+                        <div className="flex items-center gap-4 mt-3 md:mt-0 w-full md:w-auto justify-between md:justify-end">
+                          <span className="text-xl font-black">{formatCurrency(sale.total)}</span>
+                          <button onClick={() => cancelSale(sale.id)} className="text-red-500 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 p-2 px-3 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors border border-red-100 dark:border-red-800/30"><RotateCcw size={16} /> Estornar</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* === ABA: RELATÓRIO DE VENDAS === */}
+              {(activeTab === 'report') && (
+                <div className="max-w-4xl mx-auto animate-fade-in">
+                  <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6 flex flex-col md:flex-row justify-between items-center gap-4 print:hidden">
+                    <div>
+                      <h2 className="text-xl font-bold">Resumo de Vendas</h2>
+                      <p className="text-sm text-gray-500">Dados gerados pelo sistema atual</p>
+                    </div>
+                    <div className="flex gap-3 w-full md:w-auto">
+                      <button onClick={requestPrint} className="flex-1 md:flex-none bg-gray-800 hover:bg-gray-700 dark:bg-gray-600 dark:hover:bg-gray-500 text-white px-4 py-2 rounded-xl font-bold flex justify-center items-center gap-2 transition-transform hover:-translate-y-1 shadow-md">
+                        <Printer size={18} /> Imprimir
+                      </button>
+                      <button onClick={() => downloadPDF('report-pdf-content', 'Relatorio_Vendas')} className="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-bold flex justify-center items-center gap-2 transition-transform hover:-translate-y-1 shadow-md hover:shadow-blue-500/30">
+                        <Download size={18} /> Baixar PDF
+                      </button>
+                    </div>
+                  </div>
+
+                  <div id="report-pdf-content" className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200 print:border-none print:shadow-none space-y-8 print:bg-white !text-black text-black">
+                    <div className="text-center border-b-2 border-gray-300 pb-4 flex flex-col items-center">
+                      <img src={settings.logoUrl} alt="Logo" className="w-16 h-16 rounded-full object-cover border-2 border-gray-300 mb-3" />
+                      <h1 className="text-3xl font-black uppercase">{settings.gremioName}</h1>
+                      <h2 className="text-xl font-bold text-gray-700 mt-1">{settings.eventName}</h2>
+                      <p className="text-lg mt-1">Relatório Geral de Vendas</p>
+                      <p className="text-sm mt-2 text-gray-600">Gerado em: {formatDate(new Date().toISOString())}</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="bg-gray-50 print:bg-gray-50 p-5 rounded-xl border-l-4 border-l-blue-500 border border-gray-200 shadow-sm">
+                        <p className="text-xs font-bold uppercase text-gray-600 mb-1">Bruto Total</p>
+                        <p className="text-2xl font-black">{formatCurrency(reportData.total)}</p>
+                      </div>
+                      <div className="bg-gray-50 print:bg-gray-50 p-5 rounded-xl border-l-4 border-l-teal-500 border border-gray-200 shadow-sm">
+                        <p className="text-xs font-bold uppercase text-gray-600 mb-1">Total PIX</p>
+                        <p className="text-2xl font-black">{formatCurrency(reportData.pix)}</p>
+                      </div>
+                      <div className="bg-gray-50 print:bg-gray-50 p-5 rounded-xl border-l-4 border-l-emerald-500 border border-gray-200 shadow-sm">
+                        <p className="text-xs font-bold uppercase text-gray-600 mb-1">Total Dinheiro</p>
+                        <p className="text-2xl font-black">{formatCurrency(reportData.dinheiro)}</p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-bold border-b border-gray-300 pb-2 mb-4">Produtos Vendidos</h3>
+                      <table className="w-full text-left">
+                        <thead className="text-xs uppercase text-gray-600 border-b border-gray-300">
+                          <tr><th className="py-2">Produto</th><th className="py-2 text-center">Qtd</th><th className="py-2 text-right">Receita</th></tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {Object.values(reportData.items).map((item, idx) => (
+                            <tr key={idx}>
+                              <td className="py-2 font-medium">{item.name}</td>
+                              <td className="py-2 text-center font-bold text-blue-700">{item.quantity}</td>
+                              <td className="py-2 text-right">{formatCurrency(item.total)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Resumo de Despesas no Relatório */}
+                    {pixExpenses.length > 0 && (
+                      <div className="mt-8 border-t-2 border-dashed border-gray-300 pt-6">
+                        <h3 className="text-lg font-bold border-b border-gray-300 pb-2 mb-4 text-red-600">Saídas e Despesas PIX Registradas</h3>
+                        <table className="w-full text-left">
+                           <thead className="text-xs uppercase text-gray-600 border-b border-gray-300">
+                             <tr><th className="py-2">Descrição</th><th className="py-2 text-center">Status</th><th className="py-2 text-right">Valor</th></tr>
+                           </thead>
+                           <tbody className="divide-y divide-gray-200">
+                             {pixExpenses.map(exp => (
+                               <tr key={exp.id}>
+                                 <td className="py-2 text-sm">{exp.description}</td>
+                                 <td className="py-2 text-center text-xs font-bold text-gray-500">{exp.isSpent ? 'Utilizado' : 'Pendente'}</td>
+                                 <td className="py-2 text-right font-bold text-red-600">- {formatCurrency(exp.amount)}</td>
+                               </tr>
+                             ))}
+                           </tbody>
+                        </table>
+                      </div>
+                    )}
+
+                    {/* ÁREA DE ASSINATURAS */}
+                    <div className="mt-20 pt-16 flex flex-col md:flex-row justify-around text-center text-sm font-semibold text-black gap-8">
+                      <div><p>_____________________________________</p><p className="mt-2">Presidente / Coord. Geral</p></div>
+                      <div><p>_____________________________________</p><p className="mt-2">Diretoria Financeira</p></div>
+                      <div><p>_____________________________________</p><p className="mt-2">Operador de Caixa</p></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ABA FECHAMENTO GAVETA MANTIDA (Código igual ao seu original apenas com Animate-fade-in) */}
+              {(activeTab === 'closing') && (
+                <div className="max-w-4xl mx-auto animate-fade-in">
+                  <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6 flex justify-between items-center print:hidden">
+                    <div>
+                      <h2 className="text-xl font-bold">Fechamento Físico</h2>
+                      <p className="text-sm text-gray-500">Conferência da gaveta de dinheiro</p>
+                    </div>
+                    <div className="flex gap-3">
+                      <button onClick={requestPrint} className="bg-gray-800 hover:bg-gray-700 dark:bg-gray-600 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 transition-transform hover:-translate-y-1 shadow-md"><Printer size={18} /> Imprimir</button>
+                      <button onClick={() => downloadPDF('closing-pdf-content', 'Fechamento_Gaveta')} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 transition-transform hover:-translate-y-1 shadow-md"><Download size={18} /> Baixar PDF</button>
+                    </div>
+                  </div>
+
+                  <div id="closing-pdf-content" className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200 print:border-none print:shadow-none space-y-8 print:bg-white !text-black text-black">
+                     {/* Mesma lógica de renderização do gaveta que você enviou... */}
+                     <div className="text-center border-b-2 border-gray-300 pb-4 flex flex-col items-center">
+                      <img src={settings.logoUrl} alt="Logo" className="w-16 h-16 rounded-full object-cover border-2 border-gray-300 mb-3" />
+                      <h1 className="text-3xl font-black uppercase">{settings.gremioName}</h1>
+                      <h2 className="text-xl font-bold text-gray-700 mt-1">{settings.eventName}</h2>
+                      <p className="text-lg mt-1">Fechamento de Caixa (Gaveta)</p>
+                      <p className="text-sm mt-2 text-gray-600">Gerado em: {formatDate(new Date().toISOString())}</p>
+                    </div>
+                    
+                    <div className="print:hidden">
+                      <p className="text-sm text-gray-600 mb-4">Preencha as quantidades de cada nota/moeda física que está no caixa agora.</p>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        {Object.keys(cashDrawer).sort((a,b)=>b-a).map(val => (
+                          <div key={val} className="flex items-center justify-between bg-gray-50 border border-gray-300 p-2 rounded-lg shadow-sm hover:border-blue-300 transition-colors">
+                            <span className="text-xs font-bold text-gray-700">R$ {Number(val).toFixed(2)}</span>
+                            <input type="number" min="0" step="1" value={cashDrawer[val] || ''} onChange={(e) => setCashDrawer({...cashDrawer, [val]: Number(e.target.value)})} className="w-16 p-1 text-center bg-white border border-gray-300 rounded outline-none font-mono font-bold focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="0" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row justify-between items-center bg-gray-50 print:bg-gray-50 p-6 rounded-xl shadow-sm border border-gray-300">
+                      <div className="text-center md:text-left mb-4 md:mb-0">
+                        <p className="text-xs uppercase font-bold text-gray-600">Valor Físico Contado</p>
+                        <p className="text-3xl font-black text-emerald-700">{formatCurrency(drawerTotal)}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs uppercase font-bold text-gray-600">Registrado no Sistema</p>
+                        <p className="text-xl font-bold text-gray-800">{formatCurrency(reportData.dinheiro)}</p>
+                      </div>
+                      <div className="text-center md:text-right mt-4 md:mt-0">
+                        <p className="text-xs uppercase font-bold text-gray-600">Diferença de Caixa</p>
+                        {drawerDiff === 0 ? (
+                          <p className="text-2xl font-bold text-green-700">Bateu Perfeito (+R$ 0,00)</p>
+                        ) : drawerDiff > 0 ? (
+                          <p className="text-2xl font-bold text-blue-700">Sobra: {formatCurrency(drawerDiff)}</p>
+                        ) : (
+                          <p className="text-2xl font-bold text-red-700">Falta (Quebra): {formatCurrency(Math.abs(drawerDiff))}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* === CONFIGURAÇÕES === */}
+              {activeTab === 'settings' && (
+                <div className="max-w-3xl mx-auto print:hidden space-y-6 animate-fade-in">
+                  <h2 className="text-2xl font-bold mb-6">Configurações do Sistema</h2>
+                  
+                  {/* Identidade Visual */}
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border dark:border-gray-700 p-6 space-y-4">
+                    <h3 className="font-bold text-lg border-b dark:border-gray-700 pb-2 flex items-center gap-2"><ImageIcon size={20}/> Identidade Visual</h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-semibold mb-2">Nome do Grêmio / Organização</label>
+                        <input type="text" value={settings.gremioName} onChange={e => setSettings({...settings, gremioName: e.target.value})} className="w-full p-3 bg-gray-50 dark:bg-gray-900 border dark:border-gray-600 rounded-xl outline-none focus:border-blue-500 transition-colors" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold mb-2">Nome do Evento Atual</label>
+                        <input type="text" value={settings.eventName} onChange={e => setSettings({...settings, eventName: e.target.value})} className="w-full p-3 bg-gray-50 dark:bg-gray-900 border dark:border-gray-600 rounded-xl outline-none focus:border-blue-500 transition-colors" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">URL da Logo (Imagem)</label>
+                      <input type="url" value={settings.logoUrl} onChange={e => setSettings({...settings, logoUrl: e.target.value})} className="w-full p-3 bg-gray-50 dark:bg-gray-900 border dark:border-gray-600 rounded-xl outline-none focus:border-blue-500 transition-colors" placeholder="https://..." />
+                    </div>
+                  </div>
+
+                  {/* Gerenciamento de Eventos (Logs) */}
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border dark:border-gray-700 p-6">
+                     <h3 className="font-bold text-lg border-b dark:border-gray-700 pb-2 mb-4 flex items-center gap-2"><Archive size={20}/> Gerenciamento de Eventos (Arquivar)</h3>
+                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                       Finalizou o evento de hoje? Arquive as vendas para limpar o caixa e guardar os registros no histórico para ver ou imprimir depois.
+                     </p>
+                     <button onClick={() => {
+                        if(sales.length === 0) return setAlertDialog({isOpen: true, title: 'Aviso', text: 'Não há vendas neste evento para arquivar.'});
+                        setConfirmDialog({
+                          isOpen: true, title: 'Arquivar Evento', text: `Deseja encerrar o evento "${settings.eventName}" e salvar os logs? O caixa e as despesas serão zerados para o próximo evento.`, isDanger: false,
+                          action: () => {
+                            const newLog = {
+                              id: Date.now().toString(),
+                              eventName: settings.eventName,
+                              date: new Date().toISOString(),
+                              totalSales: getReport(sales).total,
+                              salesCount: sales.length,
+                              salesData: [...sales]
+                            };
+                            setEventLogs([newLog, ...eventLogs]);
+                            setSales([]);
+                            setPixExpenses([]); // Zera as despesas tb
+                            setCashDrawer(defaultDrawer);
+                            setSettings({...settings, eventName: 'Novo Evento'});
+                            setAlertDialog({isOpen: true, title: 'Sucesso', text: 'Evento salvo nos logs e caixa zerado com sucesso!'});
+                          }
+                        });
+                     }} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center w-full md:w-auto gap-2 transition-transform hover:-translate-y-1 shadow-md hover:shadow-blue-500/30">
+                       <Archive size={20}/> Encerrar Evento Atual e Arquivar
+                     </button>
+
+                     {/* Tabela de Logs Antigos */}
+                     {eventLogs.length > 0 && (
+                       <div className="mt-8 animate-fade-in">
+                         <h4 className="font-bold mb-3">Histórico de Eventos Anteriores</h4>
+                         <div className="overflow-x-auto">
+                           <table className="w-full text-left text-sm border dark:border-gray-700 rounded-lg overflow-hidden shadow-sm">
+                             <thead className="bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400">
+                               <tr><th className="p-3">Data</th><th className="p-3">Evento</th><th className="p-3 text-right">Faturamento</th><th className="p-3 text-center">Ações</th></tr>
+                             </thead>
+                             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                               {eventLogs.map(log => (
+                                 <tr key={log.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                   <td className="p-3">{new Date(log.date).toLocaleDateString('pt-BR')}</td>
+                                   <td className="p-3 font-medium">{log.eventName}</td>
+                                   <td className="p-3 text-right font-bold text-green-600 dark:text-green-400">{formatCurrency(log.totalSales)}</td>
+                                   <td className="p-3 text-center">
+                                     <button onClick={() => setViewLogModal(log)} className="inline-flex items-center gap-1 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-200 dark:hover:bg-blue-900 transition-colors"><Eye size={14}/> Ver PDF</button>
+                                   </td>
+                                 </tr>
+                               ))}
+                             </tbody>
+                           </table>
+                         </div>
+                       </div>
+                     )}
+                  </div>
+
+                  {/* Zona de Perigo */}
+                  <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-800/50 p-6">
+                    <h3 className="font-bold text-red-800 dark:text-red-400 mb-2 flex items-center gap-2"><AlertTriangle/> Zona de Perigo</h3>
+                    <p className="text-sm text-red-600 dark:text-red-300 mb-4">Isto apagará todas as vendas do evento atual, histórico de logs salvos e resetará a gaveta.</p>
+                    <button onClick={() => {
+                        setConfirmDialog({
+                          isOpen: true, title: 'Zerar Todo o Sistema', text: 'Você tem certeza absoluta? Todo o histórico atual, logs de eventos anteriores e dados da gaveta serão perdidos permanentemente.', isDanger: true,
+                          action: () => {
+                            setSales([]); setEventLogs([]); setCashDrawer(defaultDrawer); setPixExpenses([]); setActiveTab('pos');
+                          }
+                        });
+                    }} className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-transform hover:scale-105 shadow-md">
+                      Excluir Todos os Dados e Resetar
+                    </button>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          </main>
         </div>
-    </div>
+      );
+    }
 
-    <script>
-        // GERENCIADOR DE VISÕES DO MENU
-        function switchView(viewId) {
-            document.querySelectorAll('.view-section').forEach(section => section.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            
-            document.getElementById(viewId).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-
-        // SISTEMA DE POPUP / MODAL EXCLUSIVO (SEM ALERTS)
-        function showPopup(message, isAlertOnly = false, callback = null) {
-            const modal = document.getElementById('custom-modal');
-            document.getElementById('modal-title').innerText = "Sistema EstudeHub";
-            document.getElementById('modal-msg').innerText = message;
-            document.getElementById('modal-input').style.display = "none";
-            document.getElementById('modal-cancel-btn').style.display = "none";
-
-            document.getElementById('modal-confirm-btn').onclick = function() {
-                modal.style.display = "none";
-                if(callback) callback();
-            };
-            modal.style.display = "flex";
-        }
-
-        function promptPopup(message, callback) {
-            const modal = document.getElementById('custom-modal');
-            document.getElementById('modal-title').innerText = "Adicionar Novo Item";
-            document.getElementById('modal-msg').innerText = message;
-            
-            const input = document.getElementById('modal-input');
-            input.style.display = "block";
-            input.value = "";
-            
-            document.getElementById('modal-cancel-btn').style.display = "inline-flex";
-            
-            document.getElementById('modal-confirm-btn').onclick = function() {
-                if(input.value.trim() !== "") {
-                    modal.style.display = "none";
-                    callback(input.value);
-                }
-            };
-            modal.style.display = "flex";
-        }
-
-        function closeModal() {
-            document.getElementById('custom-modal').style.display = "none";
-        }
-
-        // SISTEMA DE SLIDES
-        let slides = ["Slide 1: Introdução ao seu Tema"];
-        let currentSlideIndex = 0;
-
-        function renderSlides() {
-            const list = document.getElementById('slides-list');
-            list.innerHTML = "";
-            slides.forEach((slide, index) => {
-                const thumb = document.createElement('div');
-                thumb.className = `slide-thumb ${index === currentSlideIndex ? 'active' : ''}`;
-                thumb.innerText = `Slide ${index + 1}`;
-                thumb.onclick = () => selectSlide(index);
-                list.appendChild(thumb);
-            });
-            document.getElementById('slide-text').value = slides[currentSlideIndex] || "";
-        }
-
-        function addSlide() {
-            slides.push(`Slide ${slides.length + 1}: Novo Conteúdo`);
-            currentSlideIndex = slides.length - 1;
-            renderSlides();
-        }
-
-        function selectSlide(index) {
-            currentSlideIndex = index;
-            renderSlides();
-        }
-
-        function updateSlideContent(val) {
-            slides[currentSlideIndex] = val;
-        }
-
-        function startPresentation() {
-            if(slides.length === 0) return;
-            let currentPresentIndex = 0;
-            const overlay = document.getElementById('slide-overlay');
-            const viewer = document.getElementById('slide-container-view');
-            
-            overlay.style.display = "flex";
-            viewer.innerText = slides[currentPresentIndex];
-
-            // Mudar slide com setas ou clique
-            overlay.onclick = function() {
-                currentPresentIndex++;
-                if(currentPresentIndex < slides.length) {
-                    viewer.innerText = slides[currentPresentIndex];
-                } else {
-                    closePresentation();
-                }
-            };
-        }
-
-        function closePresentation() {
-            document.getElementById('slide-overlay').style.display = "none";
-        }
-
-        // SISTEMA DE MAPA MENTAL (ARRASTAR E SOLTAR)
-        const canvas = document.getElementById('canvas-container');
-
-        function openNodeModal() {
-            promptPopup("Qual é a ideia central ou conceito do balão?", function(text) {
-                createMindNode(text);
-            });
-        }
-
-        function createMindNode(text) {
-            const node = document.createElement('div');
-            node.className = 'mind-node';
-            node.style.left = '150px';
-            node.style.top = '150px';
-            node.innerHTML = `<span>${text}</span> <i class="fa-solid fa-circle-xmark" onclick="this.parentElement.remove()"></i>`;
-            
-            // Lógica de Arrastar (Drag and Drop)
-            let isDragging = false;
-            let offsetX, offsetY;
-
-            node.addEventListener('mousedown', (e) => {
-                if(e.target.tagName === 'I') return;
-                isDragging = true;
-                offsetX = e.clientX - node.getBoundingClientRect().left;
-                offsetY = e.clientY - node.getBoundingClientRect().top;
-                node.style.cursor = 'grabbing';
-            });
-
-            document.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                const rect = canvas.getBoundingClientRect();
-                let x = e.clientX - rect.left - offsetX;
-                let y = e.clientY - rect.top - offsetY;
-
-                // Restringir limites dentro do canvas
-                x = Math.max(0, Math.min(x, rect.width - node.offsetWidth));
-                y = Math.max(0, Math.min(y, rect.height - node.offsetHeight));
-
-                node.style.left = `${x}px`;
-                node.style.top = `${y}px`;
-            });
-
-            document.addEventListener('mouseup', () => {
-                isDragging = false;
-                node.style.cursor = 'move';
-            });
-
-            canvas.appendChild(node);
-        }
-
-        function clearCanvas() {
-            canvas.innerHTML = "";
-        }
-
-        // Inicialização Inicial
-        renderSlides();
-    </script>
+    const root = createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
 </body>
 </html>
