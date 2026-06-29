@@ -49,7 +49,7 @@
       ShoppingCart, Settings, Tag, PlusCircle, MinusCircle, CheckCircle, 
       CreditCard, Banknote, X, Edit2, Trash2, RotateCcw, LayoutDashboard, 
       History, Printer, Download, Calculator, Lock, Sun, Moon, AlertTriangle, Info,
-      GripHorizontal, Archive, Image as ImageIcon, ArrowUpRight, Eye, Package
+      GripHorizontal, Archive, Image as ImageIcon, Eye, Package, Target
     } from 'lucide-react';
 
     function App() {
@@ -75,8 +75,9 @@
       const [eventLogs, setEventLogs] = useState(() => loadData('pdv_event_logs', []));
       const [products, setProducts] = useState(() => loadData('pdv_products', []));
       const [sales, setSales] = useState(() => loadData('pdv_sales', []));
-      // NOVO ESTADO: Bloquinho de PIX (Despesas)
-      const [pixExpenses, setPixExpenses] = useState(() => loadData('pdv_pix_expenses', []));
+      
+      // NOVO ESTADO: Metas de Arrecadação
+      const [goalSettings, setGoalSettings] = useState(() => loadData('pdv_goal', { description: 'Festa de Fim de Ano', target: 1000 }));
       
       const [activeTab, setActiveTab] = useState('pos'); 
       const [cart, setCart] = useState([]);
@@ -93,17 +94,13 @@
       const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', text: '', action: null, isDanger: false });
       const [alertDialog, setAlertDialog] = useState({ isOpen: false, title: '', text: '' });
       const [isPixModalOpen, setIsPixModalOpen] = useState(false);
-      const [viewLogModal, setViewLogModal] = useState(null); // Visualizar evento arquivado
+      const [viewLogModal, setViewLogModal] = useState(null); 
       
       const [editingProduct, setEditingProduct] = useState(null);
       const [prodName, setProdName] = useState('');
       const [prodPrice, setProdPrice] = useState('');
       const [prodStock, setProdStock] = useState('');
       
-      // Form de Saídas PIX
-      const [expDesc, setExpDesc] = useState('');
-      const [expAmount, setExpAmount] = useState('');
-
       const [checkoutMsg, setCheckoutMsg] = useState('');
       const [pixStudentName, setPixStudentName] = useState('');
       const [pixStudentClass, setPixStudentClass] = useState('');
@@ -115,7 +112,7 @@
       useEffect(() => { localStorage.setItem('pdv_products', JSON.stringify(products)); }, [products]);
       useEffect(() => { localStorage.setItem('pdv_sales', JSON.stringify(sales)); }, [sales]);
       useEffect(() => { localStorage.setItem('pdv_cash_drawer', JSON.stringify(cashDrawer)); }, [cashDrawer]);
-      useEffect(() => { localStorage.setItem('pdv_pix_expenses', JSON.stringify(pixExpenses)); }, [pixExpenses]);
+      useEffect(() => { localStorage.setItem('pdv_goal', JSON.stringify(goalSettings)); }, [goalSettings]);
 
       // Aplicação do Tema Dark/Light
       useEffect(() => {
@@ -127,11 +124,29 @@
       const formatCurrency = (val) => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
       const formatDate = (isoString) => new Date(isoString).toLocaleString('pt-BR');
 
+      // --- EXPORTAÇÃO E CÁLCULOS (Movido para cima para usar nas Metas) ---
+      const getReport = (salesData = sales) => {
+        return salesData.reduce((acc, sale) => {
+          acc.total += sale.total;
+          acc.discounts += sale.discount || 0;
+          if (sale.paymentMethod === 'PIX') acc.pix += sale.total;
+          if (sale.paymentMethod === 'DINHEIRO') acc.dinheiro += sale.total;
+
+          sale.items.forEach(item => {
+            if (!acc.items[item.product.id]) acc.items[item.product.id] = { name: item.product.name, quantity: 0, total: 0 };
+            acc.items[item.product.id].quantity += item.quantity;
+            acc.items[item.product.id].total += (item.quantity * item.product.price);
+          });
+          return acc;
+        }, { total: 0, pix: 0, dinheiro: 0, discounts: 0, items: {} });
+      };
+
+      const reportData = getReport();
+
       // --- CAIXA E VENDAS ---
       const addToCart = (product) => {
         setCart(prev => {
           const exists = prev.find(i => i.product.id === product.id);
-          // Verifica estoque
           if (product.stock !== undefined && product.stock !== '') {
             const currentQty = exists ? exists.quantity : 0;
             if (currentQty >= product.stock) {
@@ -175,7 +190,6 @@
           studentInfo: paymentMethod === 'PIX' ? { name: pixStudentName, schoolClass: pixStudentClass } : null
         };
 
-        // Atualizar estoque
         const updatedProducts = products.map(p => {
           const inCart = cart.find(c => c.product.id === p.id);
           if (inCart && p.stock !== undefined && p.stock !== '') {
@@ -197,7 +211,6 @@
         setConfirmDialog({
           isOpen: true, title: 'Estornar Venda', text: 'Tem certeza que deseja estornar (cancelar) esta venda? O estoque será devolvido.', isDanger: true,
           action: () => {
-            // Devolver estoque
             let updatedProducts = [...products];
             saleToCancel.items.forEach(item => {
               updatedProducts = updatedProducts.map(p => {
@@ -239,43 +252,7 @@
         });
       };
 
-      // --- DESPESAS (PIX) ---
-      const saveExpense = (e) => {
-        e.preventDefault();
-        if(!expDesc || !expAmount) return;
-        const amountNum = parseFloat(expAmount.toString().replace(',', '.'));
-        setPixExpenses([{
-          id: Date.now().toString(), description: expDesc, amount: amountNum, isSpent: false, date: new Date().toISOString()
-        }, ...pixExpenses]);
-        setExpDesc(''); setExpAmount('');
-      };
-
-      const toggleExpenseStatus = (id) => {
-        setPixExpenses(pixExpenses.map(exp => exp.id === id ? { ...exp, isSpent: !exp.isSpent } : exp));
-      };
-
-      const deleteExpense = (id) => {
-        setPixExpenses(pixExpenses.filter(e => e.id !== id));
-      };
-
-      // --- EXPORTAÇÃO E CÁLCULOS ---
-      const getReport = (salesData = sales) => {
-        return salesData.reduce((acc, sale) => {
-          acc.total += sale.total;
-          acc.discounts += sale.discount || 0;
-          if (sale.paymentMethod === 'PIX') acc.pix += sale.total;
-          if (sale.paymentMethod === 'DINHEIRO') acc.dinheiro += sale.total;
-
-          sale.items.forEach(item => {
-            if (!acc.items[item.product.id]) acc.items[item.product.id] = { name: item.product.name, quantity: 0, total: 0 };
-            acc.items[item.product.id].quantity += item.quantity;
-            acc.items[item.product.id].total += (item.quantity * item.product.price);
-          });
-          return acc;
-        }, { total: 0, pix: 0, dinheiro: 0, discounts: 0, items: {} });
-      };
-
-      // Funcionalidade de Impressão (Força tema claro)
+      // --- FUNCIONALIDADES DE IMPRESSÃO ---
       const executeWithLightMode = (callback) => {
         const wasDark = document.documentElement.classList.contains('dark');
         if (wasDark) document.documentElement.classList.remove('dark');
@@ -369,15 +346,14 @@
         </button>
       );
 
-      const reportData = getReport();
       const drawerTotal = calculateDrawerTotal();
       const drawerDiff = drawerTotal - reportData.dinheiro;
+      const progressPercent = Math.min((reportData.total / (goalSettings.target || 1)) * 100, 100);
 
       return (
         <div className="min-h-screen flex w-full">
           
           {/* ================= MODAIS ESCONDIDOS ================= */}
-          
           {/* Modal Visualizar Log Arquivado */}
           {viewLogModal && (
             <div className="absolute inset-0 bg-black/60 z-[60] flex items-center justify-center p-4 backdrop-blur-sm print:hidden">
@@ -421,8 +397,7 @@
             </div>
           )}
 
-          {/* Outros Modais (Alerta, Confirmação, Calc, PIX) mantidos e otimizados... */}
-          {/* ... (Alerta Simples) ... */}
+          {/* Alerta Simples */}
           {alertDialog.isOpen && (
             <div className="absolute inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm print:hidden">
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm p-6 animate-fade-in">
@@ -435,7 +410,7 @@
             </div>
           )}
 
-          {/* ... (Confirmação) ... */}
+          {/* Confirmação */}
           {confirmDialog.isOpen && (
             <div className="absolute inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm print:hidden">
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm p-6 animate-fade-in">
@@ -516,7 +491,7 @@
             <nav className="flex-1 space-y-2">
               <NavItem id="pos" icon={ShoppingCart} label="Caixa (PDV)" />
               <NavItem id="products" icon={Tag} label="Cardápio / Estoque" />
-              <NavItem id="expenses" icon={ArrowUpRight} label="Saídas (Gasto PIX)" />
+              <NavItem id="goals" icon={Target} label="Metas do Grêmio" />
               <NavItem id="history" icon={History} label="Histórico Atual" />
               <NavItem id="report" icon={LayoutDashboard} label="Relatório de Vendas" />
               <NavItem id="closing" icon={Lock} label="Fechamento (Gaveta)" />
@@ -608,62 +583,71 @@
                 </div>
               )}
 
-              {/* === DESPESAS E SAÍDAS PIX (NOVA ABA) === */}
-              {activeTab === 'expenses' && (
+              {/* === METAS DE ARRECADAÇÃO (NOVA ABA) === */}
+              {activeTab === 'goals' && (
                 <div className="max-w-4xl mx-auto print:hidden animate-fade-in">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="p-3 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-xl"><ArrowUpRight size={24}/></div>
+                    <div className="p-3 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl"><Target size={24}/></div>
                     <div>
-                      <h2 className="text-2xl font-bold">Bloquinho de Saídas PIX</h2>
-                      <p className="text-gray-500 text-sm">Registre gastos, compras ou repasses feitos pelo caixa.</p>
+                      <h2 className="text-2xl font-bold">Metas de Arrecadação do Grêmio</h2>
+                      <p className="text-gray-500 text-sm">Acompanhe o progresso das vendas rumo ao objetivo do evento.</p>
                     </div>
                   </div>
 
-                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border dark:border-gray-700 overflow-hidden mb-8">
-                    <form onSubmit={saveExpense} className="p-5 flex flex-col md:flex-row gap-4 items-end bg-gray-50 dark:bg-gray-900/50">
-                      <div className="flex-1 w-full">
-                        <label className="block text-sm font-semibold mb-1">Descrição do Gasto (Para quem / O que)</label>
-                        <input type="text" value={expDesc} onChange={e => setExpDesc(e.target.value)} required placeholder="Ex: Compra de gelo, Repasse fornecedor..." className="w-full p-3 bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl outline-none focus:border-red-400 transition-colors shadow-sm" />
+                  {/* Configurar Meta */}
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border dark:border-gray-700 overflow-hidden mb-8 p-6">
+                    <h3 className="font-bold mb-4">Definir Objetivo</h3>
+                    <div className="flex flex-col md:flex-row gap-4">
+                      <div className="flex-1">
+                        <label className="block text-sm font-semibold mb-1">Para que estamos arrecadando?</label>
+                        <input type="text" value={goalSettings.description} onChange={e => setGoalSettings({...goalSettings, description: e.target.value})} placeholder="Ex: Compra da Mesa de Ping Pong" className="w-full p-3 bg-gray-50 dark:bg-gray-900 border dark:border-gray-700 rounded-xl outline-none focus:border-purple-400 transition-colors" />
                       </div>
-                      <div className="w-full md:w-48">
-                        <label className="block text-sm font-semibold mb-1">Valor (R$)</label>
-                        <input type="number" step="0.01" min="0" value={expAmount} onChange={e => setExpAmount(e.target.value)} required placeholder="0,00" className="w-full p-3 bg-white dark:bg-gray-900 border dark:border-gray-700 rounded-xl outline-none focus:border-red-400 transition-colors shadow-sm" />
+                      <div className="w-full md:w-64">
+                        <label className="block text-sm font-semibold mb-1">Qual o valor Alvo? (R$)</label>
+                        <input type="number" step="10" min="1" value={goalSettings.target} onChange={e => setGoalSettings({...goalSettings, target: Number(e.target.value)})} placeholder="Ex: 800" className="w-full p-3 bg-gray-50 dark:bg-gray-900 border dark:border-gray-700 rounded-xl outline-none focus:border-purple-400 transition-colors" />
                       </div>
-                      <button type="submit" className="p-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold flex items-center gap-2 transition-transform hover:-translate-y-1 shadow-md hover:shadow-red-500/30 w-full md:w-auto justify-center"><CheckCircle size={20} /> Registrar</button>
-                    </form>
+                    </div>
                   </div>
 
-                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border dark:border-gray-700 overflow-hidden">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="bg-gray-50 dark:bg-gray-900/50 border-b dark:border-gray-700 text-sm text-gray-500">
-                          <th className="p-4">Descrição e Data</th><th className="p-4 w-32">Valor</th><th className="p-4 w-32 text-center">Status</th><th className="p-4 w-16 text-center">Ação</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y dark:divide-gray-700">
-                        {pixExpenses.length === 0 && <tr><td colSpan="4" className="p-8 text-center text-gray-500">Nenhuma saída registrada.</td></tr>}
-                        {pixExpenses.map(exp => (
-                          <tr key={exp.id} className="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                            <td className="p-4">
-                              <p className={`font-medium ${exp.isSpent ? 'text-gray-400 line-through' : ''}`}>{exp.description}</p>
-                              <p className="text-xs text-gray-400">{formatDate(exp.date)}</p>
-                            </td>
-                            <td className={`p-4 font-bold ${exp.isSpent ? 'text-gray-400' : 'text-red-500 dark:text-red-400'}`}>- {formatCurrency(exp.amount)}</td>
-                            <td className="p-4 text-center">
-                              <button onClick={() => toggleExpenseStatus(exp.id)} className={`px-3 py-1 rounded-full text-xs font-bold border transition-all ${exp.isSpent ? 'bg-gray-100 dark:bg-gray-700 text-gray-500 border-gray-300 dark:border-gray-600' : 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 border-amber-300 hover:scale-105 shadow-sm'}`}>
-                                {exp.isSpent ? '✅ Utilizado' : '⏳ Pendente'}
-                              </button>
-                            </td>
-                            <td className="p-4 text-center">
-                              <button onClick={() => deleteExpense(exp.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"><Trash2 size={18}/></button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                    <div className="bg-gray-50 dark:bg-gray-900/80 p-4 border-t dark:border-gray-700 flex justify-between items-center">
-                      <span className="font-bold text-gray-600 dark:text-gray-400">Total de Saídas/Gastos:</span>
-                      <span className="text-xl font-black text-red-600 dark:text-red-400">{formatCurrency(pixExpenses.reduce((sum, exp) => sum + exp.amount, 0))}</span>
+                  {/* Visualizador da Meta */}
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border dark:border-gray-700 overflow-hidden p-8 text-center relative">
+                    {progressPercent >= 100 && (
+                      <div className="absolute inset-0 bg-green-500/10 flex items-center justify-center animate-pulse z-0 rounded-2xl"></div>
+                    )}
+                    
+                    <div className="relative z-10">
+                      <h3 className="text-xl font-medium text-gray-500 dark:text-gray-400 mb-2">Objetivo: <span className="font-bold text-gray-800 dark:text-gray-200">{goalSettings.description}</span></h3>
+                      
+                      <div className="flex justify-between items-end mb-4">
+                        <div className="text-left">
+                          <p className="text-sm font-bold text-gray-400 uppercase">Arrecadado</p>
+                          <p className="text-3xl font-black text-purple-600 dark:text-purple-400">{formatCurrency(reportData.total)}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-bold text-gray-400 uppercase">Meta</p>
+                          <p className="text-xl font-bold text-gray-600 dark:text-gray-300">{formatCurrency(goalSettings.target)}</p>
+                        </div>
+                      </div>
+
+                      {/* Barra de Progresso */}
+                      <div className="w-full h-8 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner mb-4 relative">
+                        <div 
+                          className={`h-full transition-all duration-1000 ease-out flex items-center justify-end pr-2 text-white font-bold text-sm ${progressPercent >= 100 ? 'bg-green-500' : 'bg-gradient-to-r from-purple-500 to-blue-500'}`}
+                          style={{ width: `${progressPercent}%` }}
+                        >
+                          {progressPercent > 10 ? `${progressPercent.toFixed(1)}%` : ''}
+                        </div>
+                      </div>
+
+                      {progressPercent >= 100 ? (
+                        <p className="text-green-600 font-bold text-lg flex justify-center items-center gap-2">
+                          <CheckCircle size={24}/> Parabéns! A meta foi atingida!
+                        </p>
+                      ) : (
+                        <p className="text-gray-500 text-sm">
+                          Faltam <span className="font-bold text-purple-600">{formatCurrency(goalSettings.target - reportData.total)}</span> para batermos a meta!
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -808,27 +792,6 @@
                       </table>
                     </div>
 
-                    {/* Resumo de Despesas no Relatório */}
-                    {pixExpenses.length > 0 && (
-                      <div className="mt-8 border-t-2 border-dashed border-gray-300 pt-6">
-                        <h3 className="text-lg font-bold border-b border-gray-300 pb-2 mb-4 text-red-600">Saídas e Despesas PIX Registradas</h3>
-                        <table className="w-full text-left">
-                           <thead className="text-xs uppercase text-gray-600 border-b border-gray-300">
-                             <tr><th className="py-2">Descrição</th><th className="py-2 text-center">Status</th><th className="py-2 text-right">Valor</th></tr>
-                           </thead>
-                           <tbody className="divide-y divide-gray-200">
-                             {pixExpenses.map(exp => (
-                               <tr key={exp.id}>
-                                 <td className="py-2 text-sm">{exp.description}</td>
-                                 <td className="py-2 text-center text-xs font-bold text-gray-500">{exp.isSpent ? 'Utilizado' : 'Pendente'}</td>
-                                 <td className="py-2 text-right font-bold text-red-600">- {formatCurrency(exp.amount)}</td>
-                               </tr>
-                             ))}
-                           </tbody>
-                        </table>
-                      </div>
-                    )}
-
                     {/* ÁREA DE ASSINATURAS */}
                     <div className="mt-20 pt-16 flex flex-col md:flex-row justify-around text-center text-sm font-semibold text-black gap-8">
                       <div><p>_____________________________________</p><p className="mt-2">Presidente / Coord. Geral</p></div>
@@ -839,7 +802,7 @@
                 </div>
               )}
 
-              {/* ABA FECHAMENTO GAVETA MANTIDA (Código igual ao seu original apenas com Animate-fade-in) */}
+              {/* === ABA: FECHAMENTO DE GAVETA === */}
               {(activeTab === 'closing') && (
                 <div className="max-w-4xl mx-auto animate-fade-in">
                   <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6 flex justify-between items-center print:hidden">
@@ -854,7 +817,6 @@
                   </div>
 
                   <div id="closing-pdf-content" className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200 print:border-none print:shadow-none space-y-8 print:bg-white !text-black text-black">
-                     {/* Mesma lógica de renderização do gaveta que você enviou... */}
                      <div className="text-center border-b-2 border-gray-300 pb-4 flex flex-col items-center">
                       <img src={settings.logoUrl} alt="Logo" className="w-16 h-16 rounded-full object-cover border-2 border-gray-300 mb-3" />
                       <h1 className="text-3xl font-black uppercase">{settings.gremioName}</h1>
@@ -933,7 +895,7 @@
                      <button onClick={() => {
                         if(sales.length === 0) return setAlertDialog({isOpen: true, title: 'Aviso', text: 'Não há vendas neste evento para arquivar.'});
                         setConfirmDialog({
-                          isOpen: true, title: 'Arquivar Evento', text: `Deseja encerrar o evento "${settings.eventName}" e salvar os logs? O caixa e as despesas serão zerados para o próximo evento.`, isDanger: false,
+                          isOpen: true, title: 'Arquivar Evento', text: `Deseja encerrar o evento "${settings.eventName}" e salvar os logs? O caixa será zerado para o próximo evento.`, isDanger: false,
                           action: () => {
                             const newLog = {
                               id: Date.now().toString(),
@@ -945,7 +907,6 @@
                             };
                             setEventLogs([newLog, ...eventLogs]);
                             setSales([]);
-                            setPixExpenses([]); // Zera as despesas tb
                             setCashDrawer(defaultDrawer);
                             setSettings({...settings, eventName: 'Novo Evento'});
                             setAlertDialog({isOpen: true, title: 'Sucesso', text: 'Evento salvo nos logs e caixa zerado com sucesso!'});
@@ -990,7 +951,7 @@
                         setConfirmDialog({
                           isOpen: true, title: 'Zerar Todo o Sistema', text: 'Você tem certeza absoluta? Todo o histórico atual, logs de eventos anteriores e dados da gaveta serão perdidos permanentemente.', isDanger: true,
                           action: () => {
-                            setSales([]); setEventLogs([]); setCashDrawer(defaultDrawer); setPixExpenses([]); setActiveTab('pos');
+                            setSales([]); setEventLogs([]); setCashDrawer(defaultDrawer); setActiveTab('pos');
                           }
                         });
                     }} className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-transform hover:scale-105 shadow-md">
